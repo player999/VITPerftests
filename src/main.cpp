@@ -4,9 +4,22 @@
 
 using namespace std;
 
+class test_boxfilter : public CLCVImagePerfTest {
+public:
+    test_boxfilter() : CLCVImagePerfTest(500,500) { }
+    void execute() {
+        cv::boxFilter(wrappedSrcImageDevice, wrappedDstImageDevice, wrappedDstImageDevice.depth(), cvSize(13,13),
+                      cvPoint(-1,-1), true, cv::BORDER_REFLECT101);
+    }
+    string name() {
+        return string("Box filter");
+    }
+};
+
 int main() {
     try {
-        CLCVImagePerfTest test_function = CLCVImagePerfTest(500, 500);
+        test_boxfilter test_function = test_boxfilter();
+        cout<<test_function.name()<<endl;
         test_function.setSqSide(40);
         test_function.setExecutionCount(10000);
         test_function.writeSrcImage("picture_src.jpg");

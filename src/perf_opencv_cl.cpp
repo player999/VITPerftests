@@ -22,8 +22,3 @@ void CLCVImagePerfTest::uploadToDevice() {
 void CLCVImagePerfTest::downloadFromDevice() {
     wrappedDstImageDevice.copyTo(wrappedDstImageHost);
 }
-
-void CLCVImagePerfTest::execute() {
-    cv::boxFilter(wrappedSrcImageDevice, wrappedDstImageDevice, wrappedDstImageDevice.depth(), cvSize(13,13),
-                  cvPoint(-1,-1), true, cv::BORDER_REFLECT101);
-}

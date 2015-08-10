@@ -224,6 +224,10 @@ void ImagePerfTest::buffer2wrapped() {
     /* TO BE OVERRIDEN */
 }
 
+std::string ImagePerfTest::name() {
+    return std::string("This is dafault test name. Please specify other!");
+}
+
 /*
  *
  * MEMORY

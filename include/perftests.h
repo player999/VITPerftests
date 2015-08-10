@@ -35,6 +35,7 @@ public:
     uint64_t run();
     virtual void uploadToDevice();
     virtual void downloadFromDevice();
+    std::string name();
     void showAnalysis();
 
     // Getters and setters
