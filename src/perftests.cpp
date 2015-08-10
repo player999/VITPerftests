@@ -1,6 +1,7 @@
 
 #include <perftests.h>
 #include <time.h>
+#include <math.h>
 
 using namespace testing;
 
@@ -51,6 +52,7 @@ uint64_t ImagePerfTest::run() {
         this->execution_time.push_back(difftime(upload, exec));
     }
     clock_gettime(CLOCK_MONOTONIC, &total_stop);
+    total_time = difftime(total_start, total_stop);
 }
 
 void ImagePerfTest::execute() {
@@ -58,7 +60,55 @@ void ImagePerfTest::execute() {
 }
 
 void ImagePerfTest::showAnalysis() {
-    std::cout<<"Total test time: "<<total_time<<std::endl;
+    uint64_t total_upload = 0;
+    uint64_t total_download = 0;
+    uint64_t total_execution = 0;
+    uint64_t runs = upload_time.size();
+    double stdev_upload = 0;
+    double stdev_download = 0;
+    double stdev_execution = 0;
+    double mean_upload = 0;
+    double mean_downlaod = 0;
+    double mean_execution = 0;
+
+    std::cout<<"Total test time: "<<total_time<<"usec"<<std::endl;
+    std::cout<<"Total runs: "<<runs<<std::endl;
+    std::cout<<std::endl;
+
+    for (int i; i < runs; i++) {
+        total_upload += upload_time[i];
+        total_download += download_time[i];
+        total_execution += execution_time[i];
+    }
+    std::cout<<"Total upload time: "<<total_upload<<"usec"<<std::endl;
+    std::cout<<"Total download time: "<<total_download<<"usec"<<std::endl;
+    std::cout<<"Total execution time: "<<total_execution<<"usec"<<std::endl;
+    std::cout<<std::endl;
+
+    mean_upload = total_upload / runs;
+    mean_downlaod = total_download / runs;
+    mean_execution = total_execution / runs;
+    std::cout<<"Mean upload time: "<<mean_upload<<"usec"<<std::endl;
+    std::cout<<"Mean download time: "<<mean_downlaod<<"usec"<<std::endl;
+    std::cout<<"Mean execution time: "<<mean_execution <<"usec"<<std::endl;
+    std::cout<<std::endl;
+
+    for (int i; i < runs; i++) {
+        stdev_upload += ((double)upload_time[i] - mean_upload);
+        stdev_download += ((double)download_time[i] - mean_downlaod);
+        stdev_execution += ((double)execution_time[i] - mean_execution);
+    }
+    stdev_upload /= runs;
+    stdev_download /= runs;
+    stdev_execution /= runs;
+
+    stdev_upload = sqrt(stdev_upload);
+    stdev_download = sqrt(stdev_download);
+    stdev_execution = sqrt(stdev_execution);
+
+    std::cout<<"STD upload time: "<<stdev_upload<<"usec"<<std::endl;
+    std::cout<<"STD download time: "<<stdev_download<<"usec"<<std::endl;
+    std::cout<<"STD execution time: "<<stdev_execution<<"usec"<<std::endl;
 }
 
 /*
@@ -185,5 +235,5 @@ void ImagePerfTest::uploadToDevice() {
 }
 
 void ImagePerfTest::downloadFromDevice() {
-    // Defualt implementation
+    // Default implementation
 }

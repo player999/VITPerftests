@@ -1,6 +1,6 @@
 
 #ifndef PERFTESTS_PERF_OPENCV_H
-#define PERFTESTS_PERF_OPENCV_H
+# define PERFTESTS_PERF_OPENCV_H
 
 # include "perftests.h"
 # include <opencv2/opencv.hpp>
@@ -14,7 +14,6 @@ public:
     void writeSrcImage(const char *path);
     void writeDstImage(const char *path);
     void buffer2wrapped();
-    void execute();
     cv::Mat wrappedSrcImageHost;
     cv::Mat wrappedDstImageHost;
 };

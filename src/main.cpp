@@ -1,19 +1,22 @@
 #include <iostream>
 #include <perf_opencv.h>
+#include "perf_opencv_cl.h"
 
 using namespace std;
 
 int main() {
     try {
-        CvImagePerfTest  test_function = CvImagePerfTest(510, 510);
+        CLCVImagePerfTest test_function = CLCVImagePerfTest(500, 500);
         test_function.setSqSide(40);
-        test_function.writeSrcImage("picture.jpg");
+        test_function.setExecutionCount(10000);
+        test_function.writeSrcImage("picture_src.jpg");
         test_function.run();
         test_function.showAnalysis();
+        test_function.writeDstImage("picture_dst.jpg");
     }
-    catch (exception& e)
+    catch (char const* e)
     {
-        cout<<e.what()<<endl;
+        cout<<e<<endl;
     }
 
     return 0;
