@@ -1,10 +1,10 @@
 
 #ifndef PERFTESTS_PERFTESTS_H
 # define PERFTESTS_PERFTESTS_H
-# include <gtest/gtest.h>
 # include <stdint.h>
 # include <stdlib.h>
 # include <vector>
+# include <string>
 
 class ImagePerfTest {
 private:
@@ -29,13 +29,14 @@ public:
     // Constructors
     ImagePerfTest(uint32_t height, uint32_t width);
     ImagePerfTest();
+    virtual ~ImagePerfTest() {}
 
     //Main functions
     virtual void execute() = 0;
     uint64_t run();
     virtual void uploadToDevice();
     virtual void downloadFromDevice();
-    std::string name();
+    virtual std::string name();
     void showAnalysis();
 
     // Getters and setters
@@ -56,5 +57,18 @@ public:
     virtual void writeDstImage(const char *path) = 0;
 
 };
+
+# define RUN_TEST(classname) \
+{\
+    classname test_function = classname(); \
+    test_function.run(); \
+    test_function.showAnalysis();\
+    std::cout<<std::endl; \
+}
+
+# define SET_NAME(x) \
+std::string name() { \
+    return std::string(x);\
+}
 
 #endif //PERFTESTS_PERFTESTS_H

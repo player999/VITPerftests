@@ -3,7 +3,7 @@
 # include <perf_opencv.h>
 # include <opencv2/core/ocl.hpp>
 
-class CLCVImagePerfTest : public CvImagePerfTest {
+class CLCVImagePerfTest : public CVImagePerfTest {
 public:
     CLCVImagePerfTest(uint32_t h, uint32_t w);
     void uploadToDevice();

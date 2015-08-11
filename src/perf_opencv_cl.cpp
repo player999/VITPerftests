@@ -4,7 +4,7 @@
 
 namespace cvocl = cv::ocl;
 
-CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width) : CvImagePerfTest(height, width) {
+CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width) : CVImagePerfTest(height, width) {
     setenv("OPENCV_OPENCL_DEVICE",":CPU:",0);
     cvocl::setUseOpenCL(true);
     if (!cvocl::useOpenCL()) throw("Processing unit not found");

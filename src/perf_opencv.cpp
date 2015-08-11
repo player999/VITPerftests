@@ -1,28 +1,27 @@
 
-#include "perf_opencv.h"
+#include <perf_opencv.h>
 
 /* CONSTRUCTOR */
-CvImagePerfTest::CvImagePerfTest(uint32_t height, uint32_t width) : ImagePerfTest (height, width) {
+CVImagePerfTest::CVImagePerfTest(uint32_t height, uint32_t width) : ImagePerfTest (height, width) {
     buffer2wrapped();
-    //wrappedDstImageHost.create(wrappedSrcImageHost.rows, wrappedSrcImageHost.cols, wrappedSrcImageHost.type());
 }
 
 /* INPUT-OUTPUT*/
 
-void CvImagePerfTest::readImage(const char *path) {
+void CVImagePerfTest::readImage(const char *path) {
     wrappedSrcImageHost = cv::imread(path);
 }
 
-void CvImagePerfTest::writeSrcImage(const char *path) {
+void CVImagePerfTest::writeSrcImage(const char *path) {
     cv::imwrite(path, wrappedSrcImageHost);
 }
 
-void CvImagePerfTest::writeDstImage(const char *path) {
+void CVImagePerfTest::writeDstImage(const char *path) {
     cv::imwrite(path, wrappedDstImageHost);
 }
 
 /* INTERNALS */
-void CvImagePerfTest::buffer2wrapped() {
+void CVImagePerfTest::buffer2wrapped() {
     wrappedSrcImageHost = cv::Mat(getImageHeight(), getImageWidth(), CV_8UC1);
     for(int i = 0; i < getImageHeight(); i++) {
         uint8_t *row_dst = wrappedSrcImageHost.row(i).data;
