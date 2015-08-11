@@ -4,15 +4,19 @@
 #include <perf_vipm.h>
 
 using namespace std;
+#define RUN_COUNT 10000
+#define SQSIDE 40
+#define IMWIDTH 500
+#define IMHEIGHT 500
 
 class test_boxfilter_cvcl : public CLCVImagePerfTest {
 public:
 
     SET_NAME("Box filter OpenCV with OpenCL");
 
-    test_boxfilter_cvcl() : CLCVImagePerfTest(500,500) {
-        setSqSide(40);
-        setExecutionCount(10000);
+    test_boxfilter_cvcl() : CLCVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
     }
 
     void execute() {
@@ -26,9 +30,9 @@ public:
 
     SET_NAME("Box filter OpenCV");
 
-    test_boxfilter_cv() : CVImagePerfTest(500,500) {
-        setSqSide(40);
-        setExecutionCount(10000);
+    test_boxfilter_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
     }
 
     void execute() {
@@ -43,13 +47,13 @@ public:
     SET_NAME("Box filter VIPM")
     vodi_strel_shape shape;
 
-    test_boxfilter_vipm() : VipmImagePerfTest(500,500) {
+    test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
         shape.sel_anchor.pi_x = 6;
         shape.sel_anchor.pi_y = 6;
         shape.sel_size.sz_height = 13;
         shape.sel_size.sz_width = 13;
-        setSqSide(40);
-        setExecutionCount(10000);
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
     }
 
     void execute() {
