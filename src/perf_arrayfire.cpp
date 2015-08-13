@@ -9,6 +9,10 @@ AFImagePerfTest::AFImagePerfTest(uint32_t height, uint32_t width) : ImagePerfTes
     buffer2wrapped();
 }
 
+AFImagePerfTest::~AFImagePerfTest() {
+    free(hostSrcData);
+}
+
 /* INPUT-OUTPUT*/
 
 void AFImagePerfTest::readImage(const char *path) {
@@ -40,26 +44,15 @@ void AFImagePerfTest::writeDstImage(const char *path) {
  */
 /* INTERNALS */
 void AFImagePerfTest::buffer2wrapped() {
-    try {
-        wrappedSrcImageHost = constant(0, getImageHeight(), getImageWidth(), f32);
-        float *base = wrappedDstImageHost.host<float>();
-        std::cout<<"Size "<<wrappedSrcImageHost.bytes()<<std::endl;
-        std::cout<<"Elements "<<wrappedSrcImageHost.elements()<<std::endl;
-        std::cout<<"Max address "<<base + wrappedSrcImageHost.elements()<<std::endl;
-        std::cout<<"Min address "<<base<<std::endl;
-        for (int i = 0; i < getImageHeight(); i++) {
-            float *row_dst = base + i * getImageWidth();
-            uint8_t *row_src = imgBuffer + i * getImageWidth();
-            for (int j = 0; j < getImageWidth(); j++) {
-                //row_dst[j] = (float) row_src[j];
-                //printf("(%d %d) ", i, j);
-                std::cout<<"Cur address "<<row_dst[j]<<std::endl;
-            }
+    free(hostSrcData);
+    hostSrcData = (float *)malloc(sizeof(float) * getImageHeight() * getImageWidth());
+    for (int i = 0; i < getImageHeight(); i++) {
+        float *row_dst = hostSrcData + i * getImageWidth();
+        uint8_t *row_src = imgBuffer + i * getImageWidth();
+        for (int j = 0; j < getImageWidth(); j++) {
+            row_dst[j] = (float) row_src[j];
         }
     }
-    catch(af::exception& e) {
-        std::cout<<e<<std::endl;
-        throw("Error filling array");
-    }
+    wrappedSrcImageHost = af::array(getImageHeight(), getImageWidth(), hostSrcData);
 }
 

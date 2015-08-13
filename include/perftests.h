@@ -11,7 +11,6 @@ private:
     //Helpers
     void allocateImage();
     void checkerBoard();
-    void buffer2wrapped();
 
     uint32_t imageWidth = 0;
     uint32_t imageHeight = 0;
@@ -50,6 +49,8 @@ public:
 
     void setSqSide(uint32_t);
     uint32_t getSqSide();
+
+    virtual void buffer2wrapped();
 
     // Input and output
     virtual void readImage(const char *path) = 0;

@@ -179,6 +179,8 @@ void ImagePerfTest::setImageWidth(uint32_t width) {
 
 void ImagePerfTest::setSqSide(uint32_t side) {
     sqSide = side;
+    checkerBoard();
+    buffer2wrapped();
 }
 
 uint32_t ImagePerfTest::getSqSide() {
