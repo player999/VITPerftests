@@ -10,9 +10,6 @@
  *
  */
 
-#define NSEC 1000000000
-#define USEC 1000000
-
 #ifdef _WIN32
     @TODO implement
     //http://stackoverflow.com/questions/9262270/color-console-output-with-c-in-windows
@@ -92,7 +89,7 @@ void ImagePerfTest::showAnalysis() {
     print_cyan("Total test time: "); uint2str(buf, total_time); print_cyan(buf); print_cyan("usec\n");
     print_cyan("Total runs: "); uint2str(buf, runs); print_cyan(buf); print_cyan("\n\n");
 
-    for (int i; i < runs; i++) {
+    for (int i = 0; i < runs; i++) {
         total_upload += upload_time[i];
         total_download += download_time[i];
         total_execution += execution_time[i];
@@ -110,7 +107,7 @@ void ImagePerfTest::showAnalysis() {
     print_purple("Mean execution time: "); uint2str(buf, mean_execution); print_purple(buf); print_purple("usec\n");
     print_purple("Mean download time: "); uint2str(buf, mean_download); print_purple(buf); print_purple("usec\n\n");
 
-    for (int i; i < runs; i++) {
+    for (int i = 0; i < runs; i++) {
         stdev_upload += ((double)upload_time[i] - mean_upload);
         stdev_download += ((double)download_time[i] - mean_download);
         stdev_execution += ((double)execution_time[i] - mean_execution);

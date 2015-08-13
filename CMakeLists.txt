@@ -8,7 +8,7 @@ option(CV_INTEL_CPU "OpenCL on Intel CPU OpenCV 3" OFF)
 option(CV_INTEL_GPU "OpenCL on Intel GPU OpenCV 3" OFF)
 option(CV_NVIDIA_GPU "OpenCL on NVIDIA GPU OpenCV 3" OFF)
 
-option(SDK "VIT AutoSDK 2.5 vipm module" ON)
+option(SDK "VIT AutoSDK 2.5 vipm module" OFF)
 
 option(AF_ORIGINAL "Arrayfire 3 build for CPU" OFF)
 option(AF_CUDA "Arrayfire 3 build for CUDA" OFF)
@@ -28,7 +28,7 @@ set(CV_LIBPATH "/home/player999/Work/opencv3/build/lib" CACHE PATH "OpenCV 3 Lib
 set(SDK_LIBPATH "/opt1/lib" CACHE PATH "AutoSDK 2.5 libraries path")
 set(AF_LIBPATH "/usr/lib" CACHE PATH "Arreayfire 3 libraries path")
 
-set(OPT_RUN_COUNT "1" CACHE STRING "Times to run test")
+set(OPT_RUN_COUNT "100" CACHE STRING "Times to run test")
 set(OPT_SQSIDE "40" CACHE STRING "Side of square on checker board")
 set(OPT_IMWIDTH "500" CACHE STRING "Test image width")
 set(OPT_IMHEIGHT "500" CACHE STRING "Test image height")
