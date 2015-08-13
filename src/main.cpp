@@ -181,6 +181,24 @@ public:
     }
 
 };
+
+class test_resize_vipm : public VipmImagePerfTest {
+public:
+
+    SET_NAME("Resize 2x2 VIPM")
+    vodi_strel_shape shape;
+
+    test_resize_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+    }
+
+    void execute() {
+        VipmResize(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_CUBIC_INTERPOL, NULL);
+        VipmFilter(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_BLUR_FILTER, &shape, NULL);
+    }
+
+};
 #endif
 
 #if defined(AF_ORIGINAL) || defined(AF_CUDA) || defined(AF_INTEL_CPU) || defined(AF_INTEL_GPU) || defined(AF_NVIDIA_GPU)

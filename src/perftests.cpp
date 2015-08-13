@@ -41,7 +41,7 @@ uint64_t ImagePerfTest::run() {
     execution_time.clear();
 
     auto total_start = std::chrono::high_resolution_clock::now();
-    for (int i; i < executionCount; i++) {
+    for (int i = 0; i < executionCount; i++) {
         auto start = std::chrono::high_resolution_clock::now();
         uploadToDevice();
         auto upload = std::chrono::high_resolution_clock::now();
