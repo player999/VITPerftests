@@ -22,7 +22,7 @@ using namespace std;
 class test_boxfilter_cv : public CVImagePerfTest {
 public:
 
-    SET_NAME("Box filter OpenCV");
+    SET_NAME("Box filter OpenCV 3");
 
     test_boxfilter_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
         setSqSide(SQSIDE);
@@ -34,6 +34,111 @@ public:
                       cvPoint(-1,-1), true, cv::BORDER_REFLECT101);
     }
 };
+
+class test_resize_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Resize 2x2 OpenCV 3");
+
+    test_resize_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+    }
+
+    void execute() {
+        cv::resize(wrappedSrcImageHost, wrappedDstImageHost, cv::Size(), 0.5, 0.5, cv::INTER_CUBIC);
+    }
+};
+
+class test_integral_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Integral image OpenCV 3");
+
+    test_integral_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+    }
+
+    void execute() {
+        cv::integral(wrappedSrcImageHost, wrappedDstImageHost, wrappedSrcImageHost.depth());
+    }
+};
+
+class test_morphology_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Erode image OpenCV 3");
+
+    cv::Mat kernel;
+    cv::Point anchor;
+
+    test_morphology_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+        kernel = cv::Mat::ones(1, 13, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void execute() {
+        cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_REFLECT101);
+    }
+};
+
+class test_otsu_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Otsu threshold OpenCV 3");
+    NO_OUTPUT_IMAGE
+
+    double thresh;
+
+    test_otsu_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+    }
+
+    void execute() {
+        thresh = cv::threshold(wrappedSrcImageHost, wrappedDstImageHost, 0, 255, cv::THRESH_OTSU | cv::THRESH_BINARY);
+    }
+};
+
+class test_hist_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Histogram OpenCV 3");
+    NO_OUTPUT_IMAGE
+
+    int histSize = 256;
+    float histRange[2] = {0,256};
+    const float *rangePtr = {histRange};
+
+    test_hist_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+    }
+
+    void execute() {
+        cv::calcHist(&wrappedSrcImageHost, 1, 0, cv::Mat(), wrappedDstImageHost, 1, &histSize, &rangePtr,
+                     true, false);
+    }
+};
+
+class test_compare_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Compare OpenCV 3");
+
+    test_compare_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        setSqSide(SQSIDE);
+        setExecutionCount(RUN_COUNT);
+    }
+
+    void execute() {
+        cv::compare(wrappedSrcImageHost, 0.5, wrappedDstImageHost, cv::CMP_GE);
+    }
+};
+
 #endif
 
 #if defined(CV_INTEL_CPU) || defined(CV_INTEL_GPU) || defined(CV_NVIDIA_GPU)
@@ -102,6 +207,12 @@ int main() {
 
 #if defined(CV_ORIGINAL)
         RUN_TEST(test_boxfilter_cv);
+        RUN_TEST(test_resize_cv);
+        RUN_TEST(test_integral_cv);
+        RUN_TEST(test_morphology_cv);
+        RUN_TEST(test_otsu_cv);
+        RUN_TEST(test_hist_cv);
+        RUN_TEST(test_compare_cv);
 #endif
 
 #if defined(CV_INTEL_CPU)

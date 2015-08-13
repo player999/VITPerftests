@@ -72,4 +72,7 @@ std::string name() { \
     return std::string(x);\
 }
 
+# define NO_OUTPUT_IMAGE \
+void writeDstImage(const char *path) { }
+
 #endif //PERFTESTS_PERFTESTS_H
