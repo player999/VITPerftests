@@ -26,22 +26,7 @@ void AFImagePerfTest::writeSrcImage(const char *path) {
 void AFImagePerfTest::writeDstImage(const char *path) {
     saveImage(path, wrappedDstImageHost);
 }
-/*
-   0 AF_SUCCESS=0,
-   1 AF_ERR_INTERNAL,
-   2 AF_ERR_NOMEM,
-   3 AF_ERR_DRIVER,
-   4 AF_ERR_RUNTIME,
-   5 AF_ERR_INVALID_ARRAY,
-   6 AF_ERR_ARG,
-   7 AF_ERR_SIZE,
-   8 AF_ERR_DIFF_TYPE,
-   9 AF_ERR_NOT_SUPPORTED,
-   10 AF_ERR_NOT_CONFIGURED,
-   11 AF_ERR_INVALID_TYPE,
-   12 AF_ERR_INVALID_ARG,
-   13 AF_ERR_UNKNOWN
- */
+
 /* INTERNALS */
 void AFImagePerfTest::buffer2wrapped() {
     free(hostSrcData);
@@ -56,3 +41,19 @@ void AFImagePerfTest::buffer2wrapped() {
     wrappedSrcImageHost = af::array(getImageHeight(), getImageWidth(), hostSrcData);
 }
 
+void AFImagePerfTest::selectPlatform(const char *plaf) {
+    int devcount = af::devicecount();
+    char pname[255];
+    char dname[255];
+    char dtool[255];
+    char dcomp[255];
+
+    for (int i=0; i < devcount; i++) {
+        af::setDevice(i);
+        af::deviceprop(dname, pname, dtool, dcomp);
+        if (!strcmp(dtool, plaf)) {
+            break;
+        }
+        if (i == devcount - 1) throw("ArrayFire platform not found");
+    };
+}

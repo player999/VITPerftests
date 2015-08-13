@@ -1,9 +1,10 @@
 #include <iostream>
-#if defined(OPENCV_ORIGINAL)
+
+#if defined(CV_ORIGINAL)
 # include <perf_opencv.h>
 #endif
 
-#if defined(OPENCV_INTEL_CPU) || defined(OPENCV_INTEL_GPU) | defined(OPENCV_NVIDIA_GPU)
+#if defined(CV_INTEL_CPU) || defined(CV_INTEL_GPU) || defined(CV_NVIDIA_GPU)
 # include <perf_opencv_cl.h>
 #endif
 
@@ -16,12 +17,8 @@
 #endif
 
 using namespace std;
-#define RUN_COUNT 1
-#define SQSIDE 40
-#define IMWIDTH 500
-#define IMHEIGHT 500
 
-#if defined(OPENCV_ORIGINAL)
+#if defined(CV_ORIGINAL)
 class test_boxfilter_cv : public CVImagePerfTest {
 public:
 
@@ -39,7 +36,7 @@ public:
 };
 #endif
 
-#if defined(OPENCV_INTEL_CPU) || defined(OPENCV_INTEL_GPU) || defined(OPENCV_NVIDIA_GPU)
+#if defined(CV_INTEL_CPU) || defined(CV_INTEL_GPU) || defined(CV_NVIDIA_GPU)
 class test_boxfilter_cvcl : public CLCVImagePerfTest {
 public:
 
@@ -58,6 +55,7 @@ public:
 #endif
 
 #if defined(SDK)
+# include <perf_vipm.h>
 class test_boxfilter_vipm : public VipmImagePerfTest {
 public:
 
@@ -101,32 +99,18 @@ public:
 
 int main() {
     try {
-//            {
-//                int devcount = af::devicecount();
-//                char pname[255];
-//                char dname[255];
-//                char dtool[255];
-//                char dcomp[255];
-//
-//                for (int i=0; i < devcount; i++) {
-//                    af::setDevice(i);
-//                    af::deviceprop(dname, pname, dtool, dcomp);
-//                    cout<<dtool<<endl;
-//                }
-//                return 0;
-//            }
 
-#if defined(OPENCV_ORIGINAL)
+#if defined(CV_ORIGINAL)
         RUN_TEST(test_boxfilter_cv);
 #endif
 
-#if defined(OPENCV_INTEL_CPU)
+#if defined(CV_INTEL_CPU)
         printf("CV OpenCL CPU\n");
         setenv("OPENCV_OPENCL_DEVICE",":CPU:", 1);
         RUN_TEST(test_boxfilter_cvcl);
 #endif
 
-#if defined(OPENCV_NVIDIA_GPU)
+#if defined(CV_NVIDIA_GPU)
         printf("CV OpenCL GPU\n");
         setenv("OPENCV_OPENCL_DEVICE","NVIDIA CUDA:GPU:", 1);
         RUN_TEST(test_boxfilter_cvcl);
@@ -137,6 +121,21 @@ int main() {
 #endif
 
 #if defined(AF_ORIGINAL)
+        RUN_TEST(test_boxfilter_af);
+#endif
+
+#if defined(AF_CUDA)
+        AFImagePerfTest::selectPlatform("NVIDIA_CUDA");
+        RUN_TEST(test_boxfilter_af);
+#endif
+
+#if defined(AF_INTEL_CPU)
+        AFImagePerfTest::selectPlatform("Intel(R) OpenCL");
+        RUN_TEST(test_boxfilter_af);
+#endif
+
+#if defined(AF_INTEL_GPU)
+        AFImagePerfTest::selectPlatform("Intel Gen OCL Driver");
         RUN_TEST(test_boxfilter_af);
 #endif
     }

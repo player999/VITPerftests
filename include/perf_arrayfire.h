@@ -16,6 +16,7 @@ public:
     af::array wrappedSrcImageHost;
     af::array wrappedDstImageHost;
     float *hostSrcData = NULL;
+    static void selectPlatform(const char *plaf);
 };
 
 #endif //PERFTESTS_PERF_ARRAYFIRE_H
