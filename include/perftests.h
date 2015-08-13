@@ -64,6 +64,7 @@ public:
     classname test_function = classname(); \
     test_function.run(); \
     test_function.showAnalysis();\
+    test_function.writeDstImage("out.jpg");\
     std::cout<<std::endl; \
 }
 

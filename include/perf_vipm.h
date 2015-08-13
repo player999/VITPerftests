@@ -14,6 +14,7 @@ public:
     void writeSrcImage(const char *path);
     void writeDstImage(const char *path);
     void buffer2wrapped();
+    struct vodi_imgparm imparm;
 
     struct vodi_image2 *wrappedSrcImage = (vodi_image2 *)NULL;
     struct vodi_image2 *wrappedDstImage = (vodi_image2 *)NULL;

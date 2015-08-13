@@ -59,18 +59,17 @@ void VipmImagePerfTest::writeDstImage(const char *path) {
 }
 
 void VipmImagePerfTest::buffer2wrapped() {
-    struct vodi_imgparm parms;
     if (wrappedSrcImage) _VodiARRdestroy((vodi_array_t)wrappedSrcImage, memstorage);
-    parms.igp_elemtype = _VodiK_ELEMTYPE_UCHAR;
-    parms.igp_width = getImageWidth();
-    parms.igp_height = getImageHeight();
-    parms.igp_wstride = __myc_align(getImageWidth(), 4);
-    parms.igp_nchannels = 1;
-    parms.igp_bpp = 8;
-    parms.igp_clrs = VodiK_UNK_CLRS;
-    parms.igp_origin = _VodiK_TL_ORIGIN;
-    wrappedSrcImage = (struct vodi_image2 *) _VodiIMGinit(NULL, &parms, memstorage, NULL);
-    wrappedDstImage = (struct vodi_image2 *) _VodiIMGinit(NULL, &parms, memstorage, NULL);
+    imparm.igp_elemtype = _VodiK_ELEMTYPE_UCHAR;
+    imparm.igp_width = getImageWidth();
+    imparm.igp_height = getImageHeight();
+    imparm.igp_wstride = __myc_align(getImageWidth(), 4);
+    imparm.igp_nchannels = 1;
+    imparm.igp_bpp = 8;
+    imparm.igp_clrs = VodiK_UNK_CLRS;
+    imparm.igp_origin = _VodiK_TL_ORIGIN;
+    wrappedSrcImage = (struct vodi_image2 *) _VodiIMGinit(NULL, &imparm, memstorage, NULL);
+    wrappedDstImage = (struct vodi_image2 *) _VodiIMGinit(NULL, &imparm, memstorage, NULL);
     uint8_t *base = (uint8_t *)wrappedSrcImage->img_base;
     uint32_t stride = wrappedSrcImage->img_wstride;
     for(int i = 0; i < getImageHeight(); i++) {

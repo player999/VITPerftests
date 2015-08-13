@@ -186,16 +186,18 @@ class test_resize_vipm : public VipmImagePerfTest {
 public:
 
     SET_NAME("Resize 2x2 VIPM")
-    vodi_strel_shape shape;
 
     test_resize_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
         setSqSide(SQSIDE);
         setExecutionCount(RUN_COUNT);
+        VodiIma
+        wrappedDstImage->img_width = wrappedSrcImage->img_width / 2;
+        wrappedDstImage->img_height = wrappedSrcImage->img_height / 2;
+        wrappedDstImage->img_wstride /= 2;
     }
 
     void execute() {
         VipmResize(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_CUBIC_INTERPOL, NULL);
-        VipmFilter(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_BLUR_FILTER, &shape, NULL);
     }
 
 };
@@ -247,6 +249,7 @@ int main() {
 
 #if defined(SDK)
         RUN_TEST(test_boxfilter_vipm);
+        RUN_TEST(test_resize_vipm);
 #endif
 
 #if defined(AF_ORIGINAL)
