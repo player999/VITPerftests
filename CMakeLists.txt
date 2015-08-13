@@ -8,7 +8,7 @@ option(CV_INTEL_CPU "OpenCL on Intel CPU OpenCV 3" OFF)
 option(CV_INTEL_GPU "OpenCL on Intel GPU OpenCV 3" OFF)
 option(CV_NVIDIA_GPU "OpenCL on NVIDIA GPU OpenCV 3" OFF)
 
-option(SDK "VIT AutoSDK 2.5 vipm module" OFF)
+option(SDK "VIT AutoSDK 2.5 vipm module" ON)
 
 option(AF_ORIGINAL "Arrayfire 3 build for CPU" OFF)
 option(AF_CUDA "Arrayfire 3 build for CUDA" OFF)
@@ -21,7 +21,8 @@ set(SDK_INCPATH_PUBLIC "/opt1/include" CACHE PATH "VIT AutoSDK 2.5 public includ
 set(SDK_INCPATH_DEVEL "/src/Vodi2.world/trunk/src/include/Devel" CACHE PATH "VIT AutoSDK 2.5 development include path")
 set(AF_INCPATH "/home/player999/Work/arrayfire/include" CACHE PATH "ArrayFire 3 include path")
 
-set(SDK_INCPATH ${SDK_INCPATH_PUBLIC} ${SDK_INCPATH_DEVEL})
+set(SDK_INCPATH ${SDK_INCPATH} ${SDK_INCPATH_PUBLIC})
+set(SDK_INCPATH ${SDK_INCPATH} ${SDK_INCPATH_DEVEL})
 
 set(CV_LIBPATH "/home/player999/Work/opencv3/build/lib" CACHE PATH "OpenCV 3 Libraries path")
 set(SDK_LIBPATH "/opt1/lib" CACHE PATH "AutoSDK 2.5 libraries path")
@@ -43,7 +44,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DIMWIDTH=${OPT_IMWIDTH}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DIMHEIGHT=${OPT_IMHEIGHT}")
 
 
-set(PERF_INCPATH include)
+set(PERF_INCPATH "include")
 set(PERF_LIBPATH "")
 set(PERF_LIBS "")
 set(SOURCE_FILES "")
@@ -77,7 +78,8 @@ if(CV_NVIDIA_GPU)
 endif(CV_NVIDIA_GPU)
 
 if(SDK)
-    set(PERF_INCPATH ${PERF_INCPATH} ${SDK_INCPATH})
+    set(PERF_INCPATH "${PERF_INCPATH}" "${SDK_INCPATH}")
+    message("${PERF_INCPATH}")
     set(PERF_LIBPATH ${PERF_LIBPATH} ${SDK_LIBPATH})
     set(PERF_LIBS ${PERF_LIBS} ${SDK_LIBS})
     set(SOURCE_FILES ${SOURCE_FILES} src/perf_vipm.cpp include/perf_vipm.h)

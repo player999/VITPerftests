@@ -1,5 +1,5 @@
 
-#include <perf_arrayfire.h>
+#include "perf_arrayfire.h"
 #include <cstring>
 
 using namespace af;

@@ -2,7 +2,7 @@
 #ifndef PERFTESTS_PERF_ARRAYFIRE_H
 #define PERFTESTS_PERF_ARRAYFIRE_H
 
-# include <perftests.h>
+# include "perftests.h"
 # include <arrayfire.h>
 
 class AFImagePerfTest : public ImagePerfTest {

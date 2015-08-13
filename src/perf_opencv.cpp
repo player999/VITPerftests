@@ -1,5 +1,5 @@
 
-#include <perf_opencv.h>
+#include "perf_opencv.h"
 
 /* CONSTRUCTOR */
 CVImagePerfTest::CVImagePerfTest(uint32_t height, uint32_t width) : ImagePerfTest (height, width) {

@@ -2,7 +2,7 @@
 #ifndef PERFTESTS_PERF_OPENCV_H
 # define PERFTESTS_PERF_OPENCV_H
 
-# include <perftests.h>
+# include "perftests.h"
 # include <opencv2/opencv.hpp>
 
 

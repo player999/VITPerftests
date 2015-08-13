@@ -1,11 +1,11 @@
 #include <iostream>
 
 #if defined(CV_ORIGINAL)
-# include <perf_opencv.h>
+# include "perf_opencv.h"
 #endif
 
 #if defined(CV_INTEL_CPU) || defined(CV_INTEL_GPU) || defined(CV_NVIDIA_GPU)
-# include <perf_opencv_cl.h>
+# include "perf_opencv_cl.h"
 #endif
 
 #if defined(SDK)
@@ -13,7 +13,7 @@
 #endif
 
 #if defined(AF_ORIGINAL) || defined(AF_CUDA) || defined(AF_INTEL_CPU) || defined(AF_INTEL_GPU) || defined(AF_NVIDIA_GPU)
-# include <perf_arrayfire.h>
+# include "perf_arrayfire.h"
 #endif
 
 using namespace std;
@@ -55,7 +55,7 @@ public:
 #endif
 
 #if defined(SDK)
-# include <perf_vipm.h>
+# include "perf_vipm.h"
 class test_boxfilter_vipm : public VipmImagePerfTest {
 public:
 

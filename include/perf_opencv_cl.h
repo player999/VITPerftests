@@ -1,6 +1,6 @@
 #ifndef PERFTESTS_PERF_OPENCV_CLGPU_H
 # define PERFTESTS_PERF_OPENCV_CLGPU_H
-# include <perf_opencv.h>
+# include "perf_opencv.h"
 # include <opencv2/core/ocl.hpp>
 
 class CLCVImagePerfTest : public CVImagePerfTest {
