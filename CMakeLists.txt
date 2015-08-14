@@ -34,9 +34,11 @@ set(SDK_LIBPATH "/opt1/lib" CACHE PATH "AutoSDK 2.5 libraries path")
 set(AF_LIBPATH "/usr/lib" CACHE PATH "Arreayfire 3 libraries path")
 
 set(CV_LIBS opencv_imgcodecs opencv_imgproc opencv_core)
+# Fix pthread on Windows
 set(SDK_LIBS Bo Vodi VodiUTILS pthread)
 set(AF_LIBS "")
 
+# Fix flags on Windows
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -Wno-format-security")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DRUN_COUNT=${OPT_RUN_COUNT}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSQSIDE=${OPT_SQSIDE}")
