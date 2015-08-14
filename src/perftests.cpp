@@ -250,3 +250,10 @@ void ImagePerfTest::RegisterTest(ImagePerfTest::test_fn test) {
     ImagePerfTest::tests.push_back(test);
 }
 
+void ImagePerfTest::Prelude() {
+    /* Do nothing */
+}
+
+void ImagePerfTest::Postlude() {
+    /* Do nothing */
+}

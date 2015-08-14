@@ -18,6 +18,8 @@ class ImagePerfTest {
     ImagePerfTest(uint32_t height, uint32_t width);
     virtual ~ImagePerfTest() {}
 
+    virtual void Prelude();  // Executed before run
+    virtual void Postlude(); // Executed after run
     uint64_t Run();
     virtual void Execute() = 0;
     virtual void UploadToDevice();
@@ -64,16 +66,16 @@ class ImagePerfTest {
     uint64_t total_time_;
 };
 
-# define RUN_TEST(classname) \
-    {\
-        classname test_function = classname(); \
-        test_function.Run(); \
-        test_function.ShowAnalysis(); \
-        test_function.WriteDstImage("out.jpg"); \
+# define CREATE_TEST_FN(classname) \
+  []() { \
+        classname test = classname(); \
+        test.Prelude(); \
+        test.Run(); \
+        test.Postlude(); \
+        test.ShowAnalysis(); \
+        test.WriteDstImage("out.jpg"); \
         std::cout << std::endl; \
     }
-
-# define CREATE_TEST_FN(classname) []() { RUN_TEST(classname); }
 
 # define SET_NAME(x)  std::string Name() const { return std::string(x); }
 

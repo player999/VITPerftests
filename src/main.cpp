@@ -140,6 +140,14 @@ public:
     }
 };
 
+REGISTER_TEST(test_boxfilter_cv);
+REGISTER_TEST(test_resize_cv);
+REGISTER_TEST(test_integral_cv);
+REGISTER_TEST(test_morphology_cv);
+REGISTER_TEST(test_otsu_cv);
+REGISTER_TEST(test_hist_cv);
+REGISTER_TEST(test_compare_cv);
+
 #endif
 
 #if defined(CV_INTEL_CPU) || defined(CV_INTEL_GPU) || defined(CV_NVIDIA_GPU)
@@ -227,58 +235,35 @@ public:
 #endif
 
 int main() {
-    try {
-
-#if defined(CV_ORIGINAL)
-        RUN_TEST(test_boxfilter_cv);
-        RUN_TEST(test_resize_cv);
-        RUN_TEST(test_integral_cv);
-        RUN_TEST(test_morphology_cv);
-        RUN_TEST(test_otsu_cv);
-        RUN_TEST(test_hist_cv);
-        RUN_TEST(test_compare_cv);
-#endif
 
 #if defined(CV_INTEL_CPU)
+// todo(player999) move this stuff into REGISTER_TEST, some pretest action can be moved into Prelude function
         printf("CV OpenCL CPU\n");
         setenv("OPENCV_OPENCL_DEVICE",":CPU:", 1);
         RUN_TEST(test_boxfilter_cvcl);
 #endif
-
 #if defined(CV_NVIDIA_GPU)
         printf("CV OpenCL GPU\n");
         setenv("OPENCV_OPENCL_DEVICE","NVIDIA CUDA:GPU:", 1);
         RUN_TEST(test_boxfilter_cvcl);
 #endif
-
-#if defined(SDK)
-        ImagePerfTest::RunAllTests();
-#endif
-
 #if defined(AF_ORIGINAL)
         RUN_TEST(test_boxfilter_af);
 #endif
-
 #if defined(AF_CUDA)
         AFImagePerfTest::selectPlatform("NVIDIA_CUDA");
         RUN_TEST(test_boxfilter_af);
 #endif
-
 #if defined(AF_INTEL_CPU)
         AFImagePerfTest::selectPlatform("Intel(R) OpenCL");
         RUN_TEST(test_boxfilter_af);
 #endif
-
 #if defined(AF_INTEL_GPU)
         AFImagePerfTest::selectPlatform("Intel Gen OCL Driver");
         RUN_TEST(test_boxfilter_af);
 #endif
-    }
-    catch (char const* e)
-    {
-        cout<<e<<endl;
-        return -1;
-    }
+
+    ImagePerfTest::RunAllTests();
 
     return 0;
 }
