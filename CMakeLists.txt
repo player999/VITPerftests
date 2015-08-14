@@ -78,11 +78,13 @@ endif((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU)))
 
 if(CV_ORIGINAL)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCV_ORIGINAL")
-    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv.cpp include/perf_opencv.h)
+    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv.cpp include/perf_opencv.h
+        src/tests/opencv_tests.h)
 endif(CV_ORIGINAL)
 
 if((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU))
-    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv_cl.cpp include/perf_opencv_cl.h)
+    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv_cl.cpp
+        include/perf_opencv_cl.h src/tests/clcv_tests.h)
     set(PERF_LIBS ${PERF_LIBS} OpenCL)
 endif((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU))
 
@@ -102,14 +104,16 @@ if(SDK)
     set(PERF_INCPATH "${PERF_INCPATH}" "${SDK_INCPATH}")
     set(PERF_LIBPATH ${PERF_LIBPATH} ${SDK_LIBPATH})
     set(PERF_LIBS ${PERF_LIBS} ${SDK_LIBS})
-    set(SOURCE_FILES ${SOURCE_FILES} src/perf_vipm.cpp include/perf_vipm.h)
+    set(SOURCE_FILES ${SOURCE_FILES} src/perf_vipm.cpp include/perf_vipm.h
+        src/tests/vipm_tests.h)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSDK")
 endif(SDK)
 
 if((AF_ORIGINAL) OR ((AF_CUDA) OR ((AF_INTEL_CPU) OR (AF_INTEL_GPU OR AF_NVIDIA_GPU))))
     set(PERF_LIBPATH ${PERF_LIBPATH} ${AF_LIBPATH})
     set(PERF_INCPATH ${PERF_INCPATH} ${AF_INCPATH})
-    set(SOURCE_FILES ${SOURCE_FILES} src/perf_arrayfire.cpp include/perf_arrayfire.h)
+    set(SOURCE_FILES ${SOURCE_FILES} src/perf_arrayfire.cpp
+        include/perf_arrayfire.h src/tests/arrayfire_tests.h)
 endif((AF_ORIGINAL) OR ((AF_CUDA) OR ((AF_INTEL_CPU) OR (AF_INTEL_GPU OR AF_NVIDIA_GPU))))
 
 if(AF_ORIGINAL)
