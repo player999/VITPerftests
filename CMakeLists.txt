@@ -22,21 +22,23 @@ option(AF_INTEL_GPU "Arrayfire 3 build for OpenCL for Intel GPU" OFF)
 option(AF_NVIDIA_GPU "Arrayfire 3 build for OpenCL for NVIDIA GPU" OFF)
 
 set(CV_INCPATH "/home/player999/Work/opencv3/include" CACHE PATH "OpenCV 3 include path")
-set(SDK_INCPATH_PUBLIC "/opt1/include" CACHE PATH "VIT AutoSDK 2.5 public include path" )
-set(SDK_INCPATH_DEVEL "/src/Vodi2.world/trunk/src/include/Devel" CACHE PATH "VIT AutoSDK 2.5 development include path")
+set(SDK_INCPATH_PUBLIC "D:/home/vadym/devel/opt_vs13_amd64/include" CACHE PATH "VIT AutoSDK 2.5 public include path" )
+set(SDK_INCPATH_DEVEL "D:/home/vadym/devel/opt_vs13_amd64/include/Devel" CACHE PATH "VIT AutoSDK 2.5 development include path")
 set(AF_INCPATH "/home/player999/Work/arrayfire/include" CACHE PATH "ArrayFire 3 include path")
 
 set(SDK_INCPATH ${SDK_INCPATH} ${SDK_INCPATH_PUBLIC})
 set(SDK_INCPATH ${SDK_INCPATH} ${SDK_INCPATH_DEVEL})
 
 set(CV_LIBPATH "/home/player999/Work/opencv3/build/lib" CACHE PATH "OpenCV 3 Libraries path")
-set(SDK_LIBPATH "/opt1/lib" CACHE PATH "AutoSDK 2.5 libraries path")
+set(SDK_LIBPATH "D:/home/vadym/devel/opt_vs13_amd64/lib" CACHE PATH "AutoSDK 2.5 libraries path")
 set(AF_LIBPATH "/usr/lib" CACHE PATH "Arreayfire 3 libraries path")
 
 set(CV_LIBS opencv_imgcodecs opencv_imgproc opencv_core)
+# todo pthread - Windows
 set(SDK_LIBS Bo Vodi VodiUTILS pthread)
 set(AF_LIBS "")
 
+# -std=c++11 -Wno-attributes -Wno-format-security- Windows
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -Wno-format-security")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DRUN_COUNT=${OPT_RUN_COUNT}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSQSIDE=${OPT_SQSIDE}")
