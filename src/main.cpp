@@ -190,7 +190,6 @@ public:
     test_resize_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
         setSqSide(SQSIDE);
         setExecutionCount(RUN_COUNT);
-        VodiIma
         wrappedDstImage->img_width = wrappedSrcImage->img_width / 2;
         wrappedDstImage->img_height = wrappedSrcImage->img_height / 2;
         wrappedDstImage->img_wstride /= 2;
