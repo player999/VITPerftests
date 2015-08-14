@@ -6,6 +6,7 @@
 #include <cstdarg>
 #include <exception>
 #include <stdexcept>
+#include <cstdio>
 
 /*
  *
@@ -32,21 +33,33 @@ std::vector<ImagePerfTest::test_fn> ImagePerfTest::tests = {};
  */
 
 #ifdef _WIN32
-@TODO implement
-//http://stackoverflow.com/questions/9262270/color-console-output-with-c-in-windows
-#define COLOR_PRINT(name) \
-    static void print_ ## name(const char *frmt, ...) {\
-        va_list args; \
-        va_start (args, frmt); \
-        vprintf (frmt, args); \
-        va_end (args); \
+#include <Windows.h>
+
+WORD GetConsoleTextAttribute(HANDLE handle) {
+    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+    GetConsoleScreenBufferInfo(handle, &csbiInfo);
+    return csbiInfo.wAttributes;
+}
+
+#define COLOR_PRINT(name, specifier) \
+    static void print_ ## name(const char *frmt, ...) {        \
+        va_list args;                                          \
+        va_start (args, frmt);                                 \
+        HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);       \
+        WORD old_color_attr = GetConsoleTextAttribute(handle); \
+        SetConsoleTextAttribute(handle, specifier);            \
+        vprintf (frmt, args);                                  \
+        SetConsoleTextAttribute(handle, old_color_attr);       \
+        va_end (args);                                         \
     }
 
-COLOR_PRINT(red)
-COLOR_PRINT(green)
-COLOR_PRINT(blue)
-COLOR_PRINT(purple)
-COLOR_PRINT(cyan)
+COLOR_PRINT(red, 12)
+COLOR_PRINT(green, 10)
+COLOR_PRINT(blue, 9)
+COLOR_PRINT(purple, 13)
+COLOR_PRINT(cyan, 11)
+COLOR_PRINT(yellow, 14)
+COLOR_PRINT(white, 15)
 #else
 #define COLOR_PRINT(name, specifier) \
     static void print_ ## name(const char *frmt, ...) {\
@@ -66,11 +79,6 @@ COLOR_PRINT(cyan, "36")
 
 #endif
 
-void WriteFormatted ( const char * format, ... )
-{
-
-}
-
 uint64_t ImagePerfTest::Run() {
     typedef std::chrono::system_clock::time_point time_point;
     auto now = std::chrono::high_resolution_clock::now;
@@ -85,7 +93,7 @@ uint64_t ImagePerfTest::Run() {
     execution_time_.clear();
 
     auto total_start = now();
-    for (int i = 0; i < execution_count_; i++) {
+    for (size_t i = 0; i < execution_count_; i++) {
         auto start = now();
         UploadToDevice();
         auto upload = now();
@@ -100,6 +108,7 @@ uint64_t ImagePerfTest::Run() {
     }
     auto total_stop = now();
     total_time_ = time_diff(total_stop, total_start);
+    return total_time_;
 }
 
 void ImagePerfTest::Execute() {
@@ -195,8 +204,8 @@ void ImagePerfTest::CheckerBoard() {
 
             /* Fill square with color */
             uint8_t *ptr = img_buffer + sq_side_ * i * image_width_ + j * sq_side_;
-            for (int k = 0; k < sq_side_; k++) {
-                for (int l = 0; l < sq_side_; l++) {
+            for (size_t k = 0; k < sq_side_; k++) {
+                for (size_t l = 0; l < sq_side_; l++) {
                     if (sq_side_ * i + k >= image_height_) continue;
                     if (sq_side_ * j + l >= image_width_) continue;
                     int off = k * image_width_ + l;

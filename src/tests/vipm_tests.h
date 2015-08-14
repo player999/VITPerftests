@@ -4,6 +4,7 @@
 
 #ifndef PERFTESTS_VIPM_TESTS_H
 # define PERFTESTS_VIPM_TESTS_H
+
 # include "perf_vipm.h"
 
 class test_boxfilter_vipm : public VipmImagePerfTest {

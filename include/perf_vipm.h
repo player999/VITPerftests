@@ -2,6 +2,9 @@
 #ifndef PERFTESTS_PERF_VIPM_H
 # define PERFTESTS_PERF_VIPM_H
 # include "perftests.h"
+
+#define HAS_TIMEVAL_STRUC
+#define HAS_OFF_TYPE
 # include <Vodi/utils/arrio/Filepath.h>
 # include <Vodi/TypesP.h>
 # include <Vodi/services/Vipm.h>

@@ -78,7 +78,7 @@ void VipmImagePerfTest::buffer2wrapped() {
     wrappedDstImage = (struct vodi_image2 *) _VodiIMGinit(NULL, &imparm, memstorage, NULL);
     uint8_t *base = (uint8_t *)wrappedSrcImage->img_base;
     uint32_t stride = wrappedSrcImage->img_wstride;
-    for(int i = 0; i < image_height(); i++) {
+    for(size_t i = 0; i < image_height(); i++) {
         uint8_t *row_dst = base + stride * i;
         uint8_t *row_src = img_buffer + i * image_width();
         memcpy(row_dst, row_src, image_width());
