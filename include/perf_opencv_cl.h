@@ -6,8 +6,8 @@
 class CLCVImagePerfTest : public CVImagePerfTest {
 public:
     CLCVImagePerfTest(uint32_t h, uint32_t w);
-    void uploadToDevice();
-    void downloadFromDevice();
+    void UploadToDevice();
+    void DownloadFromDevice();
     cv::UMat wrappedSrcImageDevice;
     cv::UMat wrappedDstImageDevice;
 };

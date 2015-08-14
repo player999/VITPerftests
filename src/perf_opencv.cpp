@@ -2,21 +2,22 @@
 #include "perf_opencv.h"
 
 /* CONSTRUCTOR */
-CVImagePerfTest::CVImagePerfTest(uint32_t height, uint32_t width) : ImagePerfTest (height, width) {
+CVImagePerfTest::CVImagePerfTest(uint32_t height, uint32_t width)
+    : ImagePerfTest (height, width) {
     buffer2wrapped();
 }
 
 /* INPUT-OUTPUT*/
 
-void CVImagePerfTest::readImage(const char *path) {
+void CVImagePerfTest::ReadImage(const char *path) {
     wrappedSrcImageHost = cv::imread(path);
 }
 
-void CVImagePerfTest::writeSrcImage(const char *path) {
+void CVImagePerfTest::WriteSrcImage(const char *path) const {
     cv::imwrite(path, wrappedSrcImageHost);
 }
 
-void CVImagePerfTest::writeDstImage(const char *path) {
+void CVImagePerfTest::WriteDstImage(const char *path) const {
     cv::imwrite(path, wrappedDstImageHost);
 }
 

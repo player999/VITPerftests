@@ -29,7 +29,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         cv::boxFilter(wrappedSrcImageHost, wrappedDstImageHost, wrappedDstImageHost.depth(), cvSize(13, 13),
                       cvPoint(-1,-1), true, cv::BORDER_REFLECT101);
     }
@@ -45,7 +45,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         cv::resize(wrappedSrcImageHost, wrappedDstImageHost, cv::Size(), 0.5, 0.5, cv::INTER_CUBIC);
     }
 };
@@ -60,7 +60,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         cv::integral(wrappedSrcImageHost, wrappedDstImageHost, wrappedSrcImageHost.depth());
     }
 };
@@ -80,7 +80,7 @@ public:
         anchor = cv::Point(-1, -1);
     }
 
-    void execute() {
+    void Execute() {
         cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_REFLECT101);
     }
 };
@@ -98,7 +98,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         thresh = cv::threshold(wrappedSrcImageHost, wrappedDstImageHost, 0, 255, cv::THRESH_OTSU | cv::THRESH_BINARY);
     }
 };
@@ -118,7 +118,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         cv::calcHist(&wrappedSrcImageHost, 1, 0, cv::Mat(), wrappedDstImageHost, 1, &histSize, &rangePtr,
                      true, false);
     }
@@ -134,7 +134,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         cv::compare(wrappedSrcImageHost, 0.5, wrappedDstImageHost, cv::CMP_GE);
     }
 };
@@ -152,7 +152,7 @@ public:
         setExecutionCount(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         cv::boxFilter(wrappedSrcImageDevice, wrappedDstImageDevice, wrappedDstImageDevice.depth(), cvSize(13,13),
                       cvPoint(-1,-1), true, cv::BORDER_REFLECT101);
     }
@@ -167,16 +167,16 @@ public:
     SET_NAME("Box filter VIPM")
     vodi_strel_shape shape;
 
-    test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+    test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT) {
         shape.sel_anchor.pi_x = 6;
         shape.sel_anchor.pi_y = 6;
         shape.sel_size.sz_height = 13;
         shape.sel_size.sz_width = 13;
-        setSqSide(SQSIDE);
-        setExecutionCount(RUN_COUNT);
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
     }
 
-    void execute() {
+    void Execute() {
         VipmFilter(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_BLUR_FILTER, &shape, NULL);
     }
 
@@ -188,14 +188,14 @@ public:
     SET_NAME("Resize 2x2 VIPM")
 
     test_resize_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
-        setSqSide(SQSIDE);
-        setExecutionCount(RUN_COUNT);
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
         wrappedDstImage->img_width = wrappedSrcImage->img_width / 2;
         wrappedDstImage->img_height = wrappedSrcImage->img_height / 2;
         wrappedDstImage->img_wstride /= 2;
     }
 
-    void execute() {
+    void Execute() {
         VipmResize(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_CUBIC_INTERPOL, NULL);
     }
 
@@ -215,7 +215,7 @@ public:
         kernel = af::constant(1.0f/9.0f, 3, 3, f32);
     }
 
-    void execute() {
+    void Execute() {
         wrappedDstImageHost = af::convolve2(wrappedSrcImageHost, kernel);
     }
 };

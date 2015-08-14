@@ -7,73 +7,68 @@
 # include <string>
 
 class ImagePerfTest {
-private:
-    //Helpers
-    void allocateImage();
-    void checkerBoard();
-
-    uint32_t imageWidth = 0;
-    uint32_t imageHeight = 0;
-    uint32_t executionCount = 1;
-    uint32_t sqSide = 20;
-
-    std::vector<uint64_t> upload_time;
-    std::vector<uint64_t> download_time;
-    std::vector<uint64_t> execution_time;
-    uint64_t total_time;
-
-public:
-    uint8_t  *imgBuffer = NULL;
-
-    // Constructors
-    ImagePerfTest(uint32_t height, uint32_t width);
+ public:
     ImagePerfTest();
+    ImagePerfTest(uint32_t height, uint32_t width);
     virtual ~ImagePerfTest() {}
 
-    //Main functions
-    virtual void execute() = 0;
-    uint64_t run();
-    virtual void uploadToDevice();
-    virtual void downloadFromDevice();
-    virtual std::string name();
-    void showAnalysis();
+    uint64_t Run();
+    virtual void Execute() = 0;
+    virtual void UploadToDevice();
+    virtual void DownloadFromDevice();
+    virtual std::string Name() const;
+    void ShowAnalysis() const;
 
-    // Getters and setters
-    void setImageHeight(uint32_t height);
-    void setImageWidth(uint32_t width);
-    uint32_t getImageWidth();
-    uint32_t getImageHeight();
+    void set_image_height(uint32_t height) { image_height_ = height; }
+    uint32_t image_height() const { return image_height_; }
 
-    void setExecutionCount(uint32_t);
-    uint32_t getExecutionCount();
+    void set_image_width(uint32_t width) { image_width_ = width; }
+    uint32_t image_width() const { return image_width_; }
 
-    void setSqSide(uint32_t);
-    uint32_t getSqSide();
+    void set_execution_count(uint32_t count) { execution_count_ = count; }
+    uint32_t execution_count() const { return execution_count_; }
+
+    void set_sq_side(uint32_t sqSide) { sq_side_ = sqSide; }
+    uint32_t sq_side() const { return sq_side_; }
 
     virtual void buffer2wrapped();
 
     // Input and output
-    virtual void readImage(const char *path) = 0;
-    virtual void writeSrcImage(const char *path) = 0;
-    virtual void writeDstImage(const char *path) = 0;
+    virtual void ReadImage(const char *path) = 0;
+    virtual void WriteSrcImage(const char *path) const = 0;
+    virtual void WriteDstImage(const char *path) const = 0;
 
+ private:
+    //Helpers
+    void AllocateImage();
+    void CheckerBoard();
+
+ protected:
+  uint8_t  *img_buffer = NULL;
+
+ private:
+    uint32_t image_width_;
+    uint32_t image_height_;
+    uint32_t execution_count_;
+    uint32_t sq_side_;
+
+    std::vector<uint64_t> upload_time_;
+    std::vector<uint64_t> download_time_;
+    std::vector<uint64_t> execution_time_;
+    uint64_t total_time_;
 };
 
 # define RUN_TEST(classname) \
-{\
-    classname test_function = classname(); \
-    test_function.run(); \
-    test_function.showAnalysis();\
-    test_function.writeDstImage("out.jpg");\
-    std::cout<<std::endl; \
-}
+    {\
+        classname test_function = classname(); \
+        test_function.Run(); \
+        test_function.ShowAnalysis(); \
+        test_function.WriteDstImage("out.jpg"); \
+        std::cout << std::endl; \
+    }
 
-# define SET_NAME(x) \
-std::string name() { \
-    return std::string(x);\
-}
+# define SET_NAME(x)  std::string Name() const { return std::string(x); }
 
-# define NO_OUTPUT_IMAGE \
-void writeDstImage(const char *path) { }
+# define NO_OUTPUT_IMAGE void WriteDstImage(const char *path) const { }
 
 #endif //PERFTESTS_PERFTESTS_H

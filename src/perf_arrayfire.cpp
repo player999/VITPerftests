@@ -5,7 +5,8 @@
 using namespace af;
 
 /* CONSTRUCTOR */
-AFImagePerfTest::AFImagePerfTest(uint32_t height, uint32_t width) : ImagePerfTest (height, width) {
+AFImagePerfTest::AFImagePerfTest(uint32_t height, uint32_t width)
+    : ImagePerfTest (height, width) {
     buffer2wrapped();
 }
 
@@ -15,15 +16,15 @@ AFImagePerfTest::~AFImagePerfTest() {
 
 /* INPUT-OUTPUT*/
 
-void AFImagePerfTest::readImage(const char *path) {
+void AFImagePerfTest::ReadImage(const char *path) {
     wrappedSrcImageHost = loadImage(path);
 }
 
-void AFImagePerfTest::writeSrcImage(const char *path) {
+void AFImagePerfTest::WriteSrcImage(const char *path) const {
     saveImage(path, wrappedSrcImageHost);
 }
 
-void AFImagePerfTest::writeDstImage(const char *path) {
+void AFImagePerfTest::WriteDstImage(const char *path) const {
     saveImage(path, wrappedDstImageHost);
 }
 
@@ -41,7 +42,7 @@ void AFImagePerfTest::buffer2wrapped() {
     wrappedSrcImageHost = af::array(getImageHeight(), getImageWidth(), hostSrcData);
 }
 
-void AFImagePerfTest::selectPlatform(const char *plaf) {
+void AFImagePerfTest::SelectPlatform(const char *plaf) {
     int devcount = af::devicecount();
     char pname[255];
     char dname[255];

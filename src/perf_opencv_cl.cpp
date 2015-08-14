@@ -4,7 +4,8 @@
 
 namespace cvocl = cv::ocl;
 
-CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width) : CVImagePerfTest(height, width) {
+CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width)
+    : CVImagePerfTest(height, width) {
     setenv("OPENCV_OPENCL_DEVICE",":CPU:",0);
     cvocl::setUseOpenCL(true);
     if (!cvocl::useOpenCL()) throw("Processing unit not found");
@@ -15,10 +16,10 @@ CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width) : CVImageP
     wrappedDstImageDevice.create(rows, cols, type, flags);
 }
 
-void CLCVImagePerfTest::uploadToDevice() {
+void CLCVImagePerfTest::UploadToDevice() {
     wrappedSrcImageHost.copyTo(wrappedSrcImageDevice);
 }
 
-void CLCVImagePerfTest::downloadFromDevice() {
+void CLCVImagePerfTest::DownloadFromDevice() {
     wrappedDstImageDevice.copyTo(wrappedDstImageHost);
 }

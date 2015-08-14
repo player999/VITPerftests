@@ -10,9 +10,9 @@ class VipmImagePerfTest : public ImagePerfTest {
 public:
     VipmImagePerfTest(uint32_t h, uint32_t w);
     ~VipmImagePerfTest();
-    void readImage(const char *path);
-    void writeSrcImage(const char *path);
-    void writeDstImage(const char *path);
+    void ReadImage(const char *path);
+    void WriteSrcImage(const char *path) const;
+    void WriteDstImage(const char *path) const;
     void buffer2wrapped();
     struct vodi_imgparm imparm;
 

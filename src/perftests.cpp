@@ -3,6 +3,26 @@
 #include <chrono>
 #include <cmath>
 #include <cstring>
+#include <cstdarg>
+#include <exception>
+#include <stdexcept>
+
+/*
+ *
+ * CONSTRUCTORS
+ *
+ */
+
+ImagePerfTest::ImagePerfTest()
+    : image_width_(0), image_height_(0), execution_count_(1), sq_side_(20) {
+}
+
+ImagePerfTest::ImagePerfTest(uint32_t height, uint32_t width)
+    : image_width_(width), image_height_(height),
+      execution_count_(1), sq_side_(20)  {
+    this->AllocateImage();
+    CheckerBoard();
+}
 
 /*
  *
@@ -11,22 +31,32 @@
  */
 
 #ifdef _WIN32
-    @TODO implement
-    //http://stackoverflow.com/questions/9262270/color-console-output-with-c-in-windows
-    #define COLOR_PRINT(name) static void print_ ## name(const char *text) {\
-        printf(text);\
+@TODO implement
+//http://stackoverflow.com/questions/9262270/color-console-output-with-c-in-windows
+#define COLOR_PRINT(name) \
+    static void print_ ## name(const char *frmt, ...) {\
+        va_list args; \
+        va_start (args, frmt); \
+        vprintf (frmt, args); \
+        va_end (args); \
     }
+
 COLOR_PRINT(red)
 COLOR_PRINT(green)
 COLOR_PRINT(blue)
 COLOR_PRINT(purple)
 COLOR_PRINT(cyan)
 #else
-#define COLOR_PRINT(name,specifier) static void print_ ## name(const char *text) {\
-        printf("\x1b[" specifier "m");\
-        printf(text);\
-        printf("\x1b[0m");\
+#define COLOR_PRINT(name, specifier) \
+    static void print_ ## name(const char *frmt, ...) {\
+    va_list args; \
+    va_start (args, frmt); \
+    printf("\x1b[" specifier "m");\
+    vprintf (frmt, args); \
+    printf("\x1b[0m");\
+    va_end (args); \
     }
+
 COLOR_PRINT(red, "31")
 COLOR_PRINT(green, "32")
 COLOR_PRINT(blue, "34")
@@ -35,82 +65,84 @@ COLOR_PRINT(cyan, "36")
 
 #endif
 
-uint64_t ImagePerfTest::run() {
-    upload_time.clear();
-    download_time.clear();
-    execution_time.clear();
+void WriteFormatted ( const char * format, ... )
+{
 
-    auto total_start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < executionCount; i++) {
-        auto start = std::chrono::high_resolution_clock::now();
-        uploadToDevice();
-        auto upload = std::chrono::high_resolution_clock::now();
-        execute();
-        auto exec = std::chrono::high_resolution_clock::now();
-        downloadFromDevice();
-        auto download = std::chrono::high_resolution_clock::now();
-        this->upload_time.push_back(std::chrono::duration_cast<std::chrono::microseconds>(upload - start).count());
-        this->execution_time.push_back(std::chrono::duration_cast<std::chrono::microseconds>(exec - upload).count());
-        this->download_time.push_back(std::chrono::duration_cast<std::chrono::microseconds>(download - exec).count());
+}
+
+uint64_t ImagePerfTest::Run() {
+    typedef std::chrono::system_clock::time_point time_point;
+    auto now = std::chrono::high_resolution_clock::now;
+
+    auto time_diff =  [](time_point &time_end, time_point &time_start) {
+      return (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
+          time_end - time_start).count();
+    };
+
+    upload_time_.clear();
+    download_time_.clear();
+    execution_time_.clear();
+
+    auto total_start = now();
+    for (int i = 0; i < execution_count_; i++) {
+        auto start = now();
+        UploadToDevice();
+        auto upload = now();
+        Execute();
+        auto exec = now();
+        DownloadFromDevice();
+        auto download = now();
+
+        upload_time_.push_back(time_diff(upload, start));
+        execution_time_.push_back(time_diff(exec, upload));
+        download_time_.push_back(time_diff(download, exec));
     }
-    auto total_stop = std::chrono::high_resolution_clock::now();
-    total_time = std::chrono::duration_cast<std::chrono::microseconds>(total_stop - total_start).count();
+    auto total_stop = now();
+    total_time_ = time_diff(total_stop, total_start);
 }
 
-void ImagePerfTest::execute() {
-    throw("Function Execute is not defined");
+void ImagePerfTest::Execute() {
+    throw std::runtime_error("Function Execute is not defined");
 }
 
-static inline void uint2str(char buf[], uint64_t number) {
-    memset(buf, 0, sizeof(buf));
-    sprintf(buf, "%lu", number);
-}
-
-static inline void dbl2str(char buf[], double number) {
-    memset(buf, 0, sizeof(buf));
-    sprintf(buf, "%f", number);
-}
-
-
-void ImagePerfTest::showAnalysis() {
+void ImagePerfTest::ShowAnalysis() const {
     uint64_t total_upload = 0;
     uint64_t total_download = 0;
     uint64_t total_execution = 0;
-    uint64_t runs = upload_time.size();
+    uint64_t runs = upload_time_.size();
     double stdev_upload = 0;
     double stdev_download = 0;
     double stdev_execution = 0;
     double mean_upload = 0;
     double mean_download = 0;
     double mean_execution = 0;
-    char buf[255];
 
-    print_red(name().c_str()); printf("\n");
-    print_cyan("Total test time: "); uint2str(buf, total_time); print_cyan(buf); print_cyan("usec\n");
-    print_cyan("Total runs: "); uint2str(buf, runs); print_cyan(buf); print_cyan("\n\n");
+    print_red("%s\n", Name().c_str());
+    print_cyan("Total test time: %ld usec\n", total_time_);
+    print_cyan("Total runs: %ld usec\n\n", runs);
 
     for (int i = 0; i < runs; i++) {
-        total_upload += upload_time[i];
-        total_download += download_time[i];
-        total_execution += execution_time[i];
+        total_upload += upload_time_[i];
+        total_download += download_time_[i];
+        total_execution += execution_time_[i];
     }
 
-    print_blue("Total upload time: "); uint2str(buf, total_upload); print_blue(buf); print_blue("usec\n");
-    print_blue("Total execution time: "); uint2str(buf, total_execution); print_blue(buf); print_blue("usec\n");
-    print_blue("Total download time: "); uint2str(buf, total_download); print_blue(buf); print_blue("usec\n\n");
+    print_blue("Total upload time: %ld usec\n", total_upload);
+    print_blue("Total execution time: %ld usec\n", total_execution);
+    print_blue("Total download time: %ld usec\n\n", total_download);
 
     mean_upload = total_upload / runs;
-    mean_download = total_download / runs;
     mean_execution = total_execution / runs;
+    mean_download = total_download / runs;
 
-    print_purple("Mean upload time: "); uint2str(buf, mean_upload); print_purple(buf); print_purple("usec\n");
-    print_purple("Mean execution time: "); uint2str(buf, mean_execution); print_purple(buf); print_purple("usec\n");
-    print_purple("Mean download time: "); uint2str(buf, mean_download); print_purple(buf); print_purple("usec\n\n");
+    print_purple("Mean upload time: %ld usec\n", mean_upload);
+    print_purple("Mean execution time: %ld usec\n", mean_execution);
+    print_purple("Mean download time: %ld usec\n", mean_download);
 
     for (int i = 0; i < runs; i++) {
-        stdev_upload += ((double)upload_time[i] - mean_upload);
-        stdev_download += ((double)download_time[i] - mean_download);
-        stdev_execution += ((double)execution_time[i] - mean_execution);
+        stdev_upload += ((double)upload_time_[i] - mean_upload);
+        stdev_download += ((double)download_time_[i] - mean_download);
+        stdev_execution += ((double)execution_time_[i] - mean_execution);
     }
     stdev_upload /= runs;
     stdev_download /= runs;
@@ -120,69 +152,13 @@ void ImagePerfTest::showAnalysis() {
     stdev_download = sqrt(stdev_download);
     stdev_execution = sqrt(stdev_execution);
 
-    print_green("STD upload time: "); dbl2str(buf, stdev_upload); print_green(buf); print_green("usec\n");
-    print_green("STD execution time: "); dbl2str(buf, stdev_execution); print_green(buf); print_green("usec\n");
-    print_green("STD download time: "); dbl2str(buf, stdev_download); print_green(buf); print_green("usec\n\n");
+    print_green("STD upload time: %lf usec\n", stdev_upload);
+    print_green("STD execution time: %lf usec\n", stdev_execution);
+    print_green("STD download time: %lf usec\n", stdev_download);
 
     print_red("================================================================================");
 }
 
-/*
- *
- * CONSTRUCTORS
- *
- */
-
-ImagePerfTest::ImagePerfTest(uint32_t height, uint32_t width) {
-    this->imageHeight = height;
-    this->imageWidth = width;
-    this->allocateImage();
-    checkerBoard();
-}
-
-ImagePerfTest::ImagePerfTest() {
-
-}
-
-/*
- *
- * Getters and setters
- *
- */
-
-void ImagePerfTest::setExecutionCount(uint32_t count) {
-    executionCount = count;
-}
-
-uint32_t ImagePerfTest::getExecutionCount() {
-    return executionCount;
-}
-
-uint32_t ImagePerfTest::getImageHeight() {
-    return imageHeight;
-}
-
-uint32_t ImagePerfTest::getImageWidth() {
-    return imageWidth;
-}
-
-void ImagePerfTest::setImageHeight(uint32_t height) {
-    imageHeight = height;
-}
-
-void ImagePerfTest::setImageWidth(uint32_t width) {
-    imageWidth = width;
-}
-
-void ImagePerfTest::setSqSide(uint32_t side) {
-    sqSide = side;
-    checkerBoard();
-    buffer2wrapped();
-}
-
-uint32_t ImagePerfTest::getSqSide() {
-    return sqSide;
-}
 
 /*
  *
@@ -190,15 +166,18 @@ uint32_t ImagePerfTest::getSqSide() {
  *
  */
 
-void ImagePerfTest::allocateImage() {
-    free(this->imgBuffer);
-    this->imgBuffer = (uint8_t *) malloc(this->imageWidth * this->imageHeight);
+void ImagePerfTest::AllocateImage() {
+    free(this->img_buffer);
+    this->img_buffer = (uint8_t *) malloc(image_width_ * image_height_);
 }
 
-void ImagePerfTest::checkerBoard() {
-    int sqHeight = (imageHeight % sqSide)?(imageHeight / sqSide + 1):(imageHeight / sqSide);
-    int sqWidth = (imageWidth % sqSide)?(imageWidth / sqSide + 1):(imageWidth / sqSide);
+void ImagePerfTest::CheckerBoard() {
+    int sqHeight = image_height_ / sq_side_ + (image_height_ % sq_side_ != 0);
+    int sqWidth = image_width_ / sq_side_ + (image_width_ % sq_side_ != 0);
 
+    printf("sqHeight %d, sqWidth %d, image_height_ %d, image_width_ %d, sq_side_ %d\n",
+           sqHeight, sqWidth, image_height_, image_width_, sq_side_
+    );
     /* Generate chess pattern */
     for (int i = 0; i < sqHeight; i++) {
         for (int j = 0; j < sqWidth; j++) {
@@ -218,12 +197,12 @@ void ImagePerfTest::checkerBoard() {
             }
 
             /* Fill square with color */
-            uint8_t *ptr = imgBuffer + sqSide * i * imageWidth + j * sqSide;
-            for (int k = 0; k < sqSide; k++) {
-                for (int l = 0; l < sqSide; l++) {
-                    if (sqSide * i + k >= imageHeight) continue;
-                    if (sqSide * j + l >= imageWidth) continue;
-                    int off = k * imageWidth + l;
+            uint8_t *ptr = img_buffer + sq_side_ * i * image_width_ + j * sq_side_;
+            for (int k = 0; k < sq_side_; k++) {
+                for (int l = 0; l < sq_side_; l++) {
+                    if (sq_side_ * i + k >= image_height_) continue;
+                    if (sq_side_ * j + l >= image_width_) continue;
+                    int off = k * image_width_ + l;
                     ptr[off] = value;
                 }
             }
@@ -242,7 +221,7 @@ void ImagePerfTest::buffer2wrapped() {
     /* TO BE OVERRIDEN */
 }
 
-std::string ImagePerfTest::name() {
+std::string ImagePerfTest::Name() const {
     return std::string("This is dafault test name. Please specify other!");
 }
 
@@ -252,10 +231,10 @@ std::string ImagePerfTest::name() {
  *
  */
 
-void ImagePerfTest::uploadToDevice() {
+void ImagePerfTest::UploadToDevice() {
     // Default implementation
 }
 
-void ImagePerfTest::downloadFromDevice() {
+void ImagePerfTest::DownloadFromDevice() {
     // Default implementation
 }

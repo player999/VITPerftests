@@ -9,14 +9,14 @@ class AFImagePerfTest : public ImagePerfTest {
 public:
     AFImagePerfTest(uint32_t height, uint32_t width);
     ~AFImagePerfTest();
-    void readImage(const char *path);
-    void writeSrcImage(const char *path);
-    void writeDstImage(const char *path);
+    void ReadImage(const char *path);
+    void WriteSrcImage(const char *path) const;
+    void WriteDstImage(const char *path) const;
     void buffer2wrapped();
     af::array wrappedSrcImageHost;
     af::array wrappedDstImageHost;
     float *hostSrcData = NULL;
-    static void selectPlatform(const char *plaf);
+    static void SelectPlatform(const char *plaf);
 };
 
 #endif //PERFTESTS_PERF_ARRAYFIRE_H
