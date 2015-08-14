@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #if defined(CV_ORIGINAL)
 # include "perf_opencv.h"
@@ -200,6 +201,10 @@ public:
     }
 
 };
+
+REGISTER_TEST(test_boxfilter_vipm);
+REGISTER_TEST(test_resize_vipm);
+
 #endif
 
 #if defined(AF_ORIGINAL) || defined(AF_CUDA) || defined(AF_INTEL_CPU) || defined(AF_INTEL_GPU) || defined(AF_NVIDIA_GPU)
@@ -247,8 +252,7 @@ int main() {
 #endif
 
 #if defined(SDK)
-        RUN_TEST(test_boxfilter_vipm);
-        RUN_TEST(test_resize_vipm);
+        ImagePerfTest::RunAllTests();
 #endif
 
 #if defined(AF_ORIGINAL)

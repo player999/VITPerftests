@@ -8,6 +8,12 @@
 
 class ImagePerfTest {
  public:
+    typedef void (* test_fn)();
+    static std::vector<test_fn> tests;
+
+    static void RunAllTests();
+    static void RegisterTest(test_fn test);
+
     ImagePerfTest();
     ImagePerfTest(uint32_t height, uint32_t width);
     virtual ~ImagePerfTest() {}
@@ -67,8 +73,21 @@ class ImagePerfTest {
         std::cout << std::endl; \
     }
 
+# define CREATE_TEST_FN(classname) []() { RUN_TEST(classname); }
+
 # define SET_NAME(x)  std::string Name() const { return std::string(x); }
 
 # define NO_OUTPUT_IMAGE void WriteDstImage(const char *path) const { }
 
+# define _xcat(x, y) x ## y
+# define _cat(x, y) _xcat(x, y)
+
+# define _ANAME _cat(Anonymous, __LINE__)
+
+# define REGISTER_TEST(classname) \
+    static struct _ANAME { \
+        _ANAME(){ ImagePerfTest::RegisterTest(CREATE_TEST_FN(classname)); } \
+    } _cat(_ANAME, var)
+
 #endif //PERFTESTS_PERFTESTS_H
+

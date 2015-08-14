@@ -24,6 +24,7 @@ ImagePerfTest::ImagePerfTest(uint32_t height, uint32_t width)
     CheckerBoard();
 }
 
+std::vector<ImagePerfTest::test_fn> ImagePerfTest::tests = {};
 /*
  *
  * MAIN FUNCTIONS
@@ -119,7 +120,7 @@ void ImagePerfTest::ShowAnalysis() const {
 
     print_red("%s\n", Name().c_str());
     print_cyan("Total test time: %ld usec\n", total_time_);
-    print_cyan("Total runs: %ld usec\n\n", runs);
+    print_cyan("Total runs: %ld times\n\n", runs);
 
     for (int i = 0; i < runs; i++) {
         total_upload += upload_time_[i];
@@ -131,26 +132,23 @@ void ImagePerfTest::ShowAnalysis() const {
     print_blue("Total execution time: %ld usec\n", total_execution);
     print_blue("Total download time: %ld usec\n\n", total_download);
 
-    mean_upload = total_upload / runs;
-    mean_execution = total_execution / runs;
-    mean_download = total_download / runs;
+    mean_upload = (double)total_upload / runs;
+    mean_execution = (double)total_execution / runs;
+    mean_download = (double)total_download / runs;
 
-    print_purple("Mean upload time: %ld usec\n", mean_upload);
-    print_purple("Mean execution time: %ld usec\n", mean_execution);
-    print_purple("Mean download time: %ld usec\n", mean_download);
+    print_purple("Mean upload time: %lf usec\n", mean_upload);
+    print_purple("Mean execution time: %lf usec\n", mean_execution);
+    print_purple("Mean download time: %lf usec\n\n", mean_download);
 
     for (int i = 0; i < runs; i++) {
-        stdev_upload += ((double)upload_time_[i] - mean_upload);
-        stdev_download += ((double)download_time_[i] - mean_download);
-        stdev_execution += ((double)execution_time_[i] - mean_execution);
+        stdev_upload += pow((double)upload_time_[i] - mean_upload, 2);
+        stdev_download += pow((double)download_time_[i] - mean_download, 2);
+        stdev_execution += pow((double)execution_time_[i] - mean_execution, 2);
     }
-    stdev_upload /= runs;
-    stdev_download /= runs;
-    stdev_execution /= runs;
 
-    stdev_upload = sqrt(stdev_upload);
-    stdev_download = sqrt(stdev_download);
-    stdev_execution = sqrt(stdev_execution);
+    stdev_upload = sqrt(stdev_upload / runs);
+    stdev_download = sqrt(stdev_download / runs);
+    stdev_execution = sqrt(stdev_execution / runs);
 
     print_green("STD upload time: %lf usec\n", stdev_upload);
     print_green("STD execution time: %lf usec\n", stdev_execution);
@@ -175,9 +173,8 @@ void ImagePerfTest::CheckerBoard() {
     int sqHeight = image_height_ / sq_side_ + (image_height_ % sq_side_ != 0);
     int sqWidth = image_width_ / sq_side_ + (image_width_ % sq_side_ != 0);
 
-    printf("sqHeight %d, sqWidth %d, image_height_ %d, image_width_ %d, sq_side_ %d\n",
-           sqHeight, sqWidth, image_height_, image_width_, sq_side_
-    );
+    //printf("sqHeight %d, sqWidth %d, image_height_ %d, image_width_ %d, sq_side_ %d\n",
+    //       sqHeight, sqWidth, image_height_, image_width_, sq_side_);
     /* Generate chess pattern */
     for (int i = 0; i < sqHeight; i++) {
         for (int j = 0; j < sqWidth; j++) {
@@ -238,3 +235,18 @@ void ImagePerfTest::UploadToDevice() {
 void ImagePerfTest::DownloadFromDevice() {
     // Default implementation
 }
+
+void ImagePerfTest::RunAllTests() {
+    try {
+        for (auto test: ImagePerfTest::tests)
+            test();
+    }
+    catch (std::exception &e) {
+        printf("An error is occured, reason: %s\n", e.what());
+    }
+}
+
+void ImagePerfTest::RegisterTest(ImagePerfTest::test_fn test) {
+    ImagePerfTest::tests.push_back(test);
+}
+
