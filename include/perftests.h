@@ -1,10 +1,12 @@
 
 #ifndef PERFTESTS_PERFTESTS_H
 # define PERFTESTS_PERFTESTS_H
+
 # include <stdint.h>
 # include <stdlib.h>
 # include <vector>
 # include <string>
+# include <iostream>
 
 class ImagePerfTest {
  public:
@@ -18,6 +20,7 @@ class ImagePerfTest {
     ImagePerfTest(uint32_t height, uint32_t width);
     virtual ~ImagePerfTest() {}
 
+    // TODO(taras) Do we need Prelude and Postlude?
     virtual void Prelude();  // Executed before run
     virtual void Postlude(); // Executed after run
     uint64_t Run();
@@ -67,7 +70,7 @@ class ImagePerfTest {
 };
 
 # define CREATE_TEST_FN(classname) \
-  []() { \
+    []() { \
         classname test = classname(); \
         test.Prelude(); \
         test.Run(); \
@@ -84,12 +87,12 @@ class ImagePerfTest {
 # define _xcat(x, y) x ## y
 # define _cat(x, y) _xcat(x, y)
 
-# define _ANAME _cat(Anonymous, __LINE__)
-
 # define REGISTER_TEST(classname) \
-    static struct _ANAME { \
-        _ANAME(){ ImagePerfTest::RegisterTest(CREATE_TEST_FN(classname)); } \
-    } _cat(_ANAME, var)
+    static struct _cat(AnonymousStruct, __LINE__) { \
+        _cat(AnonymousStruct, __LINE__) () { \
+            ImagePerfTest::RegisterTest(CREATE_TEST_FN(classname)); \
+        } \
+    } _cat(AnonymousVar, __LINE__)
 
 #endif //PERFTESTS_PERFTESTS_H
 

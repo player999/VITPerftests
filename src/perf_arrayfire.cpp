@@ -4,7 +4,14 @@
 
 using namespace af;
 
-/* CONSTRUCTOR */
+std::map<DeviceType, const char *> AFImagePerfTest::devices_names = {
+    {kOriginal, ""},
+    {kNvidiaCUDA, "NVIDIA_CUDA"},
+    {kIntelOpenCL, "Intel(R) OpenCL"},
+    {kIntelGenOCLDriver, "Intel Gen OCL Driver"}
+};
+
+
 AFImagePerfTest::AFImagePerfTest(uint32_t height, uint32_t width)
     : ImagePerfTest (height, width) {
     buffer2wrapped();
@@ -13,8 +20,6 @@ AFImagePerfTest::AFImagePerfTest(uint32_t height, uint32_t width)
 AFImagePerfTest::~AFImagePerfTest() {
     free(hostSrcData);
 }
-
-/* INPUT-OUTPUT*/
 
 void AFImagePerfTest::ReadImage(const char *path) {
     wrappedSrcImageHost = loadImage(path);
@@ -28,18 +33,16 @@ void AFImagePerfTest::WriteDstImage(const char *path) const {
     saveImage(path, wrappedDstImageHost);
 }
 
-/* INTERNALS */
 void AFImagePerfTest::buffer2wrapped() {
     free(hostSrcData);
-    hostSrcData = (float *)malloc(sizeof(float) * getImageHeight() * getImageWidth());
-    for (int i = 0; i < getImageHeight(); i++) {
-        float *row_dst = hostSrcData + i * getImageWidth();
-        uint8_t *row_src = imgBuffer + i * getImageWidth();
-        for (int j = 0; j < getImageWidth(); j++) {
+    hostSrcData = (float *)malloc(sizeof(float) * image_height() * image_width());
+    for (int i = 0; i < image_height(); i++) {
+        float *row_dst = hostSrcData + i * image_width();
+        uint8_t *row_src = img_buffer + i * image_width();
+        for (int j = 0; j < image_width(); j++)
             row_dst[j] = (float) row_src[j];
-        }
     }
-    wrappedSrcImageHost = af::array(getImageHeight(), getImageWidth(), hostSrcData);
+    wrappedSrcImageHost = af::array(image_height(), image_width(), hostSrcData);
 }
 
 void AFImagePerfTest::SelectPlatform(const char *plaf) {
@@ -49,12 +52,14 @@ void AFImagePerfTest::SelectPlatform(const char *plaf) {
     char dtool[255];
     char dcomp[255];
 
-    for (int i=0; i < devcount; i++) {
+    if (strlen(plaf) == 0) return; //Nothing to do here
+
+    for (int i = 0; i < devcount; i++) {
         af::setDevice(i);
         af::deviceprop(dname, pname, dtool, dcomp);
-        if (!strcmp(dtool, plaf)) {
-            break;
-        }
-        if (i == devcount - 1) throw("ArrayFire platform not found");
+        if (!strcmp(dtool, plaf)) break;
+        if (i == devcount - 1)
+            throw std::runtime_error("ArrayFire platform not found");
     };
+    // todo(taras) This function is implemented?
 }
