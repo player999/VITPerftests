@@ -23,10 +23,10 @@ void CVImagePerfTest::WriteDstImage(const char *path) const {
 
 /* INTERNALS */
 void CVImagePerfTest::buffer2wrapped() {
-    wrappedSrcImageHost = cv::Mat(getImageHeight(), getImageWidth(), CV_8UC1);
-    for(int i = 0; i < getImageHeight(); i++) {
+    wrappedSrcImageHost = cv::Mat(image_height(), image_width(), CV_8UC1);
+    for (int i = 0; i < image_height(); i++) {
         uint8_t *row_dst = wrappedSrcImageHost.row(i).data;
-        uint8_t *row_src = imgBuffer + i * getImageWidth();
-        memcpy(row_dst, row_src, getImageWidth());
+        uint8_t *row_src = img_buffer + i * image_width();
+        memcpy(row_dst, row_src, image_width());
     }
 }

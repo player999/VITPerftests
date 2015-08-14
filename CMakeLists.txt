@@ -44,11 +44,12 @@ set(CV_LIBPATH "/home/player999/Work/opencv3/build/lib" CACHE PATH "OpenCV 3 Lib
 set(SDK_LIBPATH "${SDK_LIBPATH_DFLT}" CACHE PATH "AutoSDK 2.5 libraries path")
 set(AF_LIBPATH "/usr/lib" CACHE PATH "Arreayfire 3 libraries path")
 
-set(CV_LIBS opencv_imgcodecs opencv_imgproc opencv_core)
 if(WIN32)
     set(SDK_LIBS Bo Vodi VodiUTILS)
+    set(CV_LIBS opencv_world300.lib)
 else()
     set(SDK_LIBS Bo Vodi VodiUTILS pthread)
+    set(CV_LIBS opencv_imgcodecs opencv_imgproc opencv_core)
 endif()
 
 set(AF_LIBS "")

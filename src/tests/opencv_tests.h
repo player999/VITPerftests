@@ -13,8 +13,8 @@ class test_boxfilter_cv : public CVImagePerfTest {
   SET_NAME("Box filter OpenCV 3");
 
   test_boxfilter_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
   }
 
   void Execute() {
@@ -27,10 +27,11 @@ class test_resize_cv : public CVImagePerfTest {
  public:
 
   SET_NAME("Resize 2x2 OpenCV 3");
+  NO_OUTPUT_IMAGE
 
   test_resize_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
   }
 
   void Execute() {
@@ -42,10 +43,11 @@ class test_integral_cv : public CVImagePerfTest {
  public:
 
   SET_NAME("Integral image OpenCV 3");
+  NO_OUTPUT_IMAGE
 
   test_integral_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
   }
 
   void Execute() {
@@ -57,13 +59,14 @@ class test_morphology_cv : public CVImagePerfTest {
  public:
 
   SET_NAME("Erode image OpenCV 3");
+  NO_OUTPUT_IMAGE
 
   cv::Mat kernel;
   cv::Point anchor;
 
   test_morphology_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
     kernel = cv::Mat::ones(1, 13, CV_8UC1);
     anchor = cv::Point(-1, -1);
   }
@@ -82,8 +85,8 @@ class test_otsu_cv : public CVImagePerfTest {
   double thresh;
 
   test_otsu_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
   }
 
   void Execute() {
@@ -97,29 +100,30 @@ class test_hist_cv : public CVImagePerfTest {
   SET_NAME("Histogram OpenCV 3");
   NO_OUTPUT_IMAGE
 
-  int histSize = 256;
-  float histRange[2] = {0,256};
-  const float *rangePtr = {histRange};
-
   test_hist_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
   }
 
   void Execute() {
-    cv::calcHist(&wrappedSrcImageHost, 1, 0, cv::Mat(), wrappedDstImageHost, 1, &histSize, &rangePtr,
-                 true, false);
+    int histSize = 256;
+    const float hranges[2] = { 0.f, 256.f };
+    const float *ranges[] = { hranges };
+    cv::calcHist(&wrappedSrcImageHost, 1, 0, cv::Mat(), wrappedDstImageHost, 1,
+    &histSize, ranges);
   }
+
 };
 
 class test_compare_cv : public CVImagePerfTest {
  public:
 
   SET_NAME("Compare OpenCV 3");
+  NO_OUTPUT_IMAGE
 
   test_compare_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
-    setSqSide(SQSIDE);
-    setExecutionCount(RUN_COUNT);
+    set_sq_side(SQSIDE);
+    set_execution_count(RUN_COUNT);
   }
 
   void Execute() {
