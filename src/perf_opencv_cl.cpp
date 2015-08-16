@@ -1,7 +1,10 @@
-
+#include <stdlib.h>
 #include "perf_opencv_cl.h"
 #include <CL/cl.hpp>
 
+#ifdef _WIN32
+# define setenv(var, value, override) _putenv(var"="value"0")
+#endif
 namespace cvocl = cv::ocl;
 
 CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width)
@@ -15,40 +18,24 @@ CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width)
     wrappedDstImageDevice.create(rows, cols, type, flags);
 }
 
+void CLCVImagePerfTest::SetOpenCLDevice(CLCVImagePerfTest::DeviceType dtype) {
+    if (dtype == CLCVImagePerfTest::DeviceType::CV_CL_CPU)
+        setenv("OPENCV_OPENCL_DEVICE", ":CPU:", 0);
+    else if (dtype == CLCVImagePerfTest::DeviceType::CV_CL_GPU)
+        setenv("OPENCV_OPENCL_DEVICE", ":GPU:", 0);
+    else
+        assert(0);
+
+    //printf(getenv("OPENCV_OPENCL_DEVICE"));
+    cvocl::setUseOpenCL(true);
+    if (!cvocl::useOpenCL())
+        throw std::runtime_error("Processing unit not found");
+}
+
 void CLCVImagePerfTest::UploadToDevice() {
     wrappedSrcImageHost.copyTo(wrappedSrcImageDevice);
 }
 
 void CLCVImagePerfTest::DownloadFromDevice() {
     wrappedDstImageDevice.copyTo(wrappedDstImageHost);
-}
-
-/*
- * OpenCV + OpenCL + GPU
- */
-
-CLCVGPUImagePerfTest::CLCVGPUImagePerfTest(uint32_t h, uint32_t w)
-    : CLCVImagePerfTest(h, w) {
-}
-
-void CLCVGPUImagePerfTest::SetOpenCLDevice() {
-    setenv("OPENCV_OPENCL_DEVICE",":GPU:", 0);
-    cvocl::setUseOpenCL(true);
-    if (!cvocl::useOpenCL())
-        throw("Processing unit not found");
-}
-
-/*
- * OpenCV + OpenCL + CPU
- */
-
-CLCVCPUImagePerfTest::CLCVCPUImagePerfTest(uint32_t h, uint32_t w)
-    : CLCVImagePerfTest(h, w) {
-}
-
-void CLCVCPUImagePerfTest::SetOpenCLDevice() {
-    setenv("OPENCV_OPENCL_DEVICE",":CPU:", 0);
-    cvocl::setUseOpenCL(true);
-    if (!cvocl::useOpenCL())
-        throw("Processing unit not found");
 }

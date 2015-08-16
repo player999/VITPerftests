@@ -61,6 +61,7 @@ class ImagePerfTest {
     uint32_t image_width_;
     uint32_t image_height_;
     uint32_t execution_count_;
+    //TODO(somebody) add more synthetic types of images!!!
     uint32_t sq_side_;
 
     std::vector<uint64_t> upload_time_;
@@ -76,13 +77,13 @@ class ImagePerfTest {
         test.Run(); \
         test.Postlude(); \
         test.ShowAnalysis(); \
-        test.WriteDstImage("out.jpg"); \
+        test.WriteDstImage((test.Name() + ".jpg").c_str()); \
         std::cout << std::endl; \
     }
 
 # define SET_NAME(x)  std::string Name() const { return std::string(x); }
 
-# define NO_OUTPUT_IMAGE void WriteDstImage(const char *path) const { }
+# define NO_OUTPUT_IMAGE void WriteDstImage(char const *path) const { }
 
 # define _xcat(x, y) x ## y
 # define _cat(x, y) _xcat(x, y)

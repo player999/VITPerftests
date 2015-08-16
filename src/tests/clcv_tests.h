@@ -7,13 +7,18 @@
 
 # include "perf_opencv_cl.h"
 
-template <typename CVCLClass>
-class test_boxfilter_cvcl : public CVCLClass {
+template<CLCVImagePerfTest::DeviceType dtype>
+struct DeviceSelector {
+    DeviceSelector() { CLCVImagePerfTest::SetOpenCLDevice(dtype); }
+};
+
+template <CLCVImagePerfTest::DeviceType dtype>
+class test_boxfilter_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
   SET_NAME("Box filter OpenCV with OpenCL");
 
-  test_boxfilter_cvcl() : CLCVImagePerfTest(IMWIDTH,IMHEIGHT) {
+  test_boxfilter_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
   }
@@ -26,11 +31,11 @@ public:
 };
 
 #if defined(CV_INTEL_CPU)
-REGISTER_TEST(test_boxfilter_cvcl<CLCVCPUImagePerfTest>);
+REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 #endif
 
 #if define defined(CV_INTEL_GPU) || defined(CV_NVIDIA_GPU)
-REGISTER_TEST(test_boxfilter_cvcl<CLCVGPUImagePerfTest>);
+REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_GPU>);
 #endif
 
 #endif //PERFTESTS_CLCV_TESTS_H
