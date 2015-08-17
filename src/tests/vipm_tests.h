@@ -113,7 +113,7 @@ public:
 
     test_hist_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
         set_sq_side(SQSIDE);
-        set_execution_count(1);
+        set_execution_count(RUN_COUNT);
         iarg.mhgp_elemtype = _VodiK_ELEMTYPE_UCHAR;
         iarg.mhgp_numscalepoints = VipmK_STD_IVRANGE_NSCALEPT;
         iarg.mhgp_valrange[0] = VipmK_STD_IVRANGE_MIN;
@@ -129,10 +129,27 @@ public:
 
 };
 
+class test_compare_vipm : public VipmImagePerfTest {
+public:
+
+    SET_NAME("Compare Vipm")
+    float rhs = 128.0f;
+    test_compare_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        VipmCmp_c(NULL, memstorage, wrappedDstImage, wrappedSrcImage, &rhs, VipmK_GEQU_CMP, NULL);
+    }
+
+};
+
 REGISTER_TEST(test_boxfilter_vipm);
 REGISTER_TEST(test_resize_vipm);
 REGISTER_TEST(test_erode_vipm);
 REGISTER_TEST(test_otsu_vipm);
 REGISTER_TEST(test_hist_vipm);
+REGISTER_TEST(test_compare_vipm);
 
 #endif //PERFTESTS_VIPM_TESTS_H
