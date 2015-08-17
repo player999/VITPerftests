@@ -23,7 +23,7 @@ class test_boxfilter_vipm : public VipmImagePerfTest {
   }
 
   void Execute() {
-    VipmFilter(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_BLUR_FILTER, &shape, NULL);
+    VipmFilter(module, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_BLUR_FILTER, &shape, NULL);
   }
 
 };
@@ -42,7 +42,7 @@ class test_resize_vipm : public VipmImagePerfTest {
   }
 
   void Execute() {
-    VipmResize(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_CUBIC_INTERPOL, NULL);
+    VipmResize(module, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_CUBIC_INTERPOL, NULL);
   }
 
 };
@@ -67,11 +67,11 @@ public:
         _VODI_MATPARM_U8(p, 1, 13, 13, 1);
         strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
         vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
-        VipmInitmorphstate(NULL, memstorage, &state, VipmK_BASIC_MORPH, wrappedSrcImage, strel, &anchor, NULL);
+        VipmInitmorphstate(module, memstorage, &state, VipmK_BASIC_MORPH, wrappedSrcImage, strel, &anchor, NULL);
     }
 
     void Execute() {
-        VipmMorphop_1(NULL, memstorage, &state, VipmK_MORPH_ERODE, wrappedDstImage, wrappedSrcImage, NULL, NULL);
+        VipmMorphop_1(module, memstorage, &state, VipmK_MORPH_ERODE, wrappedDstImage, wrappedSrcImage, NULL, NULL);
     }
 
 };
@@ -97,7 +97,7 @@ public:
     }
 
     void Execute() {
-        VipmThreshold(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, &opts, 0, NULL);
+        VipmThreshold(module, memstorage, wrappedDstImage, wrappedSrcImage, NULL, &opts, 0, NULL);
     }
 
 };
@@ -123,8 +123,8 @@ public:
     }
 
     void Execute() {
-        VipmInitHist(NULL, memstorage, VipmK_HG_CALCULATE, &hist[0], &iarg, NULL);
-        VipmHistogram(NULL, memstorage, VipmK_HG_CALCULATE, hist, wrappedSrcImage, 0, NULL);
+        VipmInitHist(module, memstorage, VipmK_HG_CALCULATE, &hist[0], &iarg, NULL);
+        VipmHistogram(module, memstorage, VipmK_HG_CALCULATE, hist, wrappedSrcImage, 0, NULL);
     }
 
 };
@@ -140,7 +140,7 @@ public:
     }
 
     void Execute() {
-        VipmCmp_c(NULL, memstorage, wrappedDstImage, wrappedSrcImage, &rhs, VipmK_GEQU_CMP, NULL);
+        VipmCmp_c(module, memstorage, wrappedDstImage, wrappedSrcImage, &rhs, VipmK_GEQU_CMP, NULL);
     }
 
 };

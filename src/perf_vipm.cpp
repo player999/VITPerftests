@@ -1,6 +1,7 @@
 #include "perf_vipm.h"
 #include <Vodi/Vodilib.h>
 #include <Vodi/mm/MemstgP.h>
+#include <Vodi/objects/Vipm.h>
 #include <Bo/aorp/Mld.h>
 #include <cstring>
 #include <stdexcept>
@@ -9,7 +10,24 @@ VipmImagePerfTest::VipmImagePerfTest(uint32_t height, uint32_t width)
     : ImagePerfTest (height, width) {
     bo_status_t status;
     memstorage = _VodiSMEMSTGopen(memstorage, NULL, NULL);
-    status = AorpMldLoad("vipm", NULL, 0, 0, NULL);
+    if (modname != NULL) {
+        status = AorpMldLoad(modname, NULL, 0, 0, NULL);
+        if (!strcmp(modname, "vipm-ipp")) {
+            _A_modopen1_nlk(module, vipmipp, NULL);
+        }
+        else if (!strcmp(modname, "vipm-opencv")) {
+            _A_modopen1_nlk(module, vipmopencv, NULL);
+        }
+        else {
+            module = _G_vipm_service_default;
+        }
+    }
+    else {
+        status = AorpMldLoad("vipm", NULL, 0, 0, NULL);
+        module = _G_vipm_service_default;
+        modname = "vipm";
+    }
+
     if (BoS_FAILURE(status))
         throw std::runtime_error("Could not load VIPM module");
     buffer2wrapped();
@@ -21,7 +39,10 @@ VipmImagePerfTest::~VipmImagePerfTest() {
         _VodiARRdestroy((vodi_array_t)wrappedSrcImage, memstorage);
     if(wrappedDstImage)
         _VodiARRdestroy((vodi_array_t)wrappedDstImage, memstorage);
-    AorpMldUnload("vipm", NULL);
+    if (!strcmp(modname, "vipm-ipp") || !strcmp(modname, "vipm-opencv")) {
+        _Art_cobclose_nlk(module, NULL);
+    }
+    AorpMldUnload(modname, NULL);
 }
 
 void VipmImagePerfTest::ReadImage(const char *path) {
@@ -83,4 +104,11 @@ void VipmImagePerfTest::buffer2wrapped() {
         uint8_t *row_src = img_buffer + i * image_width();
         memcpy(row_dst, row_src, image_width());
     }
+}
+
+void VipmImagePerfTest::SetVipmType(VipmType vtype) {
+    if (VIPM_DEFAULT == vtype) modname = "vipm";
+    else if (VIPM_IPP == vtype) modname = "vipm-ipp";
+    else if (VIPM_OPENCV == vtype) modname = "vipm-opencv";
+    else modname = "vipm";
 }

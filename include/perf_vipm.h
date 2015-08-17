@@ -9,10 +9,21 @@
 # include <Vodi/TypesP.h>
 # include <Vodi/services/Vipm.h>
 
+enum VipmType {
+    VIPM_DEFAULT = 0,
+    VIPM_IPP,
+    VIPM_OPENCV
+};
+
 class VipmImagePerfTest : public ImagePerfTest {
 public:
     VipmImagePerfTest(uint32_t h, uint32_t w);
     ~VipmImagePerfTest();
+
+    const char *modname = NULL;
+    aorp_object_t module = NULL;
+
+    void SetVipmType(VipmType vtype);
     void ReadImage(const char *path);
     void WriteSrcImage(const char *path) const;
     void WriteDstImage(const char *path) const;
