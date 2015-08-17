@@ -102,9 +102,37 @@ public:
 
 };
 
+class test_hist_vipm : public VipmImagePerfTest {
+public:
+
+    SET_NAME("Histogram Vipm")
+    NO_OUTPUT_IMAGE
+
+    struct vipm_histogram hist[1];
+    struct vipm_hginitarg iarg;
+
+    test_hist_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(1);
+        iarg.mhgp_elemtype = _VodiK_ELEMTYPE_UCHAR;
+        iarg.mhgp_numscalepoints = VipmK_STD_IVRANGE_NSCALEPT;
+        iarg.mhgp_valrange[0] = VipmK_STD_IVRANGE_MIN;
+        iarg.mhgp_valrange[1] = VipmK_STD_IVRANGE_MAX;
+        iarg.mhgp_datasz.sz_width = wrappedSrcImage->img_width;
+        iarg.mhgp_datasz.sz_height = wrappedSrcImage->img_height;
+    }
+
+    void Execute() {
+        VipmInitHist(NULL, memstorage, VipmK_HG_CALCULATE, &hist[0], &iarg, NULL);
+        VipmHistogram(NULL, memstorage, VipmK_HG_CALCULATE, hist, wrappedSrcImage, 0, NULL);
+    }
+
+};
+
 REGISTER_TEST(test_boxfilter_vipm);
 REGISTER_TEST(test_resize_vipm);
 REGISTER_TEST(test_erode_vipm);
 REGISTER_TEST(test_otsu_vipm);
+REGISTER_TEST(test_hist_vipm);
 
 #endif //PERFTESTS_VIPM_TESTS_H
