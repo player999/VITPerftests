@@ -17,7 +17,7 @@ struct PlatformSelector {
 template<DeviceType dtype = kOriginal>
 class test_boxfilter_af : PlatformSelector<dtype>, public AFImagePerfTest {
  public:
-  SET_NAME(std::string("Box filter Arrayfire: ") + devices_names[dtype]);
+  SET_NAME(std::string("Box filter Arrayfire 3: ") + devices_names[dtype]);
 
   af::array kernel;
 
@@ -32,9 +32,25 @@ class test_boxfilter_af : PlatformSelector<dtype>, public AFImagePerfTest {
   }
 };
 
+template<DeviceType dtype = kOriginal>
+class test_resize_af : PlatformSelector<dtype>, public AFImagePerfTest {
+public:
+    SET_NAME(std::string("Resize 2x2 Arrayfire 3: ") + devices_names[dtype]);
+
+    test_resize_af() : AFImagePerfTest(IMWIDTH, IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        wrappedDstImageHost = af::resize(0.5f, 0.5f, wrappedSrcImageHost, AF_INTERP_BILINEAR);
+    }
+};
+
 
 #if defined(AF_ORIGINAL)
 REGISTER_TEST(test_boxfilter_af<kOriginal>);
+REGISTER_TEST(test_resize_af<kOriginal>);
 #endif
 
 #if defined(AF_CUDA)
