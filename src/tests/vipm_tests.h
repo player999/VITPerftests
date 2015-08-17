@@ -47,7 +47,64 @@ class test_resize_vipm : public VipmImagePerfTest {
 
 };
 
+class test_erode_vipm : public VipmImagePerfTest {
+public:
+
+    SET_NAME("Erode VIPM")
+    struct vodi_matrix state;
+    vodi_point_t anchor;
+    struct vodi_matrix strel_matrix;
+    vodi_array_t strel;
+
+    test_erode_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        anchor.pi_x = 6;
+        anchor.pi_y = 0;
+        unsigned char strel_data[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                        0x00, 0x00, 0x00};
+        struct vodi_matparm p;
+        _VODI_MATPARM_U8(p, 1, 13, 13, 1);
+        strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
+        vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
+        VipmInitmorphstate(NULL, memstorage, &state, VipmK_BASIC_MORPH, wrappedSrcImage, strel, &anchor, NULL);
+    }
+
+    void Execute() {
+        VipmMorphop_1(NULL, memstorage, &state, VipmK_MORPH_ERODE, wrappedDstImage, wrappedSrcImage, NULL, NULL);
+    }
+
+};
+
+class test_otsu_vipm : public VipmImagePerfTest {
+public:
+
+    SET_NAME("Otsu VIPM")
+    struct vipm_threshopts opts;
+    struct vipm_threshparm parms[2];
+
+    test_otsu_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        opts.mtho_method = VipmF_THRESH_OTSU_METHOD;
+        opts.otsu.mtho_vrange[0] = VipmK_THRESH_DFL_VRANGE;
+        opts.otsu.mtho_global_factor = 1;
+        opts.otsu.mtho_local_factor = 0;
+        parms[0].mthp_cmpop = VipmK_LEQU_CMP;
+        parms[1].mthp_cmpop = VipmK_GREATER_CMP;
+        parms[0].mthp_val[0] = 0;
+        parms[1].mthp_val[0] = 255;
+    }
+
+    void Execute() {
+        VipmThreshold(NULL, memstorage, wrappedDstImage, wrappedSrcImage, NULL, &opts, 0, NULL);
+    }
+
+};
+
 REGISTER_TEST(test_boxfilter_vipm);
 REGISTER_TEST(test_resize_vipm);
+REGISTER_TEST(test_erode_vipm);
+REGISTER_TEST(test_otsu_vipm);
 
 #endif //PERFTESTS_VIPM_TESTS_H
