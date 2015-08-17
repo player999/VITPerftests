@@ -7,7 +7,8 @@ class CLCVImagePerfTest : public CVImagePerfTest {
 public:
     enum DeviceType {
         CV_CL_CPU,
-        CV_CL_GPU
+        CV_CL_INTEL_GPU,
+        CV_CL_NVIDIA_GPU
     };
 
     CLCVImagePerfTest(uint32_t h, uint32_t w);

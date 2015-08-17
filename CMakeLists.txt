@@ -79,13 +79,13 @@ set(SOURCE_FILES "")
 if ((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU)))
     set(PERF_INCPATH ${PERF_INCPATH} ${CV_INCPATH})
     set(PERF_LIBPATH ${PERF_LIBPATH} ${CV_LIBPATH})
+    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv.cpp include/perf_opencv.h)
     set(PERF_LIBS ${PERF_LIBS} ${CV_LIBS})
 endif((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU)))
 
 if(CV_ORIGINAL)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCV_ORIGINAL")
-    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv.cpp include/perf_opencv.h
-        src/tests/opencv_tests.h)
+    set(SOURCE_FILES ${SOURCE_FILES} src/tests/opencv_tests.h)
 endif(CV_ORIGINAL)
 
 if((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU))

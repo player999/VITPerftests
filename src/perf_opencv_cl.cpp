@@ -21,8 +21,10 @@ CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width)
 void CLCVImagePerfTest::SetOpenCLDevice(CLCVImagePerfTest::DeviceType dtype) {
     if (dtype == CLCVImagePerfTest::DeviceType::CV_CL_CPU)
         setenv("OPENCV_OPENCL_DEVICE", ":CPU:", 0);
-    else if (dtype == CLCVImagePerfTest::DeviceType::CV_CL_GPU)
-        setenv("OPENCV_OPENCL_DEVICE", ":GPU:", 0);
+    else if (dtype == CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU)
+        setenv("OPENCV_OPENCL_DEVICE", "Intel Gen OCL Driver:GPU:", 0);
+    else if (dtype == CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU)
+        setenv("OPENCV_OPENCL_DEVICE", "NVIDIA CUDA:GPU:", 0);
     else
         assert(0);
 
