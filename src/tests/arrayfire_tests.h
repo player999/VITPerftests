@@ -50,14 +50,22 @@ public:
 template<DeviceType dtype = kOriginal>
 class test_erode_af : PlatformSelector<dtype>, public AFImagePerfTest {
 public:
+#if defined(AF_ORIGINAL)
     SET_NAME(std::string("Erode 1x13 Arrayfire 3: ") + devices_names[dtype]);
+#else
+    SET_NAME(std::string("Erode 3x3 Arrayfire 3: ") + devices_names[dtype]);
+#endif
 
     af::array mask;
 
     test_erode_af() : AFImagePerfTest(IMWIDTH, IMHEIGHT) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
+#if defined(AF_ORIGINAL)
         mask =  af::constant(1.0f, 1, 13, f32);
+#else
+        mask =  af::constant(1.0f, 3, 3, f32);
+#endif
     }
 
     void Execute() {
@@ -97,23 +105,71 @@ public:
     }
 };
 
-#if defined(AF_ORIGINAL)
-//REGISTER_TEST(test_boxfilter_af<kOriginal>);
-//REGISTER_TEST(test_resize_af<kOriginal>);
-//REGISTER_TEST(test_erode_af<kOriginal>);
+template<DeviceType dtype = kOriginal>
+class test_hist_af : PlatformSelector<dtype>, public AFImagePerfTest {
+public:
+    SET_NAME(std::string("Histogram Arrayfire 3: ") + devices_names[dtype]);
+    NO_OUTPUT_IMAGE
 
+    test_hist_af() : AFImagePerfTest(IMWIDTH, IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        af::array hist  = af::histogram(wrappedSrcImageHost, 256, 0.0f, 255.0f);
+    }
+};
+
+template<DeviceType dtype = kOriginal>
+class test_compare_af : PlatformSelector<dtype>, public AFImagePerfTest {
+public:
+    SET_NAME(std::string("Compare Arrayfire 3: ") + devices_names[dtype]);
+
+    test_compare_af() : AFImagePerfTest(IMWIDTH, IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        wrappedDstImageHost = 255.0f * (wrappedSrcImageHost >= 128.0);
+    }
+};
+
+#if defined(AF_ORIGINAL) || defined(AF_CUDA)
+REGISTER_TEST(test_boxfilter_af<kOriginal>);
+REGISTER_TEST(test_resize_af<kOriginal>);
+REGISTER_TEST(test_erode_af<kOriginal>);
+// REGISTER_TEST(test_otsu_af<kOriginal>);
+REGISTER_TEST(test_hist_af<kOriginal>);
+REGISTER_TEST(test_compare_af<kOriginal>);
 #endif
 
-#if defined(AF_CUDA)
+#if defined(AF_NVIDIA_GPU)
 REGISTER_TEST(test_boxfilter_af<kNvidiaCUDA>);
+REGISTER_TEST(test_resize_af<kNvidiaCUDA>);
+REGISTER_TEST(test_erode_af<kNvidiaCUDA>);
+// REGISTER_TEST(test_otsu_af<kNvidiaCUDA>);
+REGISTER_TEST(test_hist_af<kNvidiaCUDA>);
+REGISTER_TEST(test_compare_af<kNvidiaCUDA>);
 #endif
 
 #if defined(AF_INTEL_CPU)
 REGISTER_TEST(test_boxfilter_af<kIntelOpenCL>);
+REGISTER_TEST(test_resize_af<kIntelOpenCL>);
+REGISTER_TEST(test_erode_af<kIntelOpenCL>);
+// REGISTER_TEST(test_otsu_af<kIntelOpenCL>);
+REGISTER_TEST(test_hist_af<kIntelOpenCL>);
+REGISTER_TEST(test_compare_af<kIntelOpenCL>);
 #endif
 
 #if defined(AF_INTEL_GPU)
 REGISTER_TEST(test_boxfilter_af<kIntelGenOCLDriver>);
+REGISTER_TEST(test_resize_af<kIntelGenOCLDriver>);
+REGISTER_TEST(test_erode_af<kIntelGenOCLDriver>);
+// REGISTER_TEST(test_otsu_af<kIntelGenOCLDriver>);
+REGISTER_TEST(test_hist_af<kIntelGenOCLDriver>);
+REGISTER_TEST(test_compare_af<kIntelGenOCLDriver>);
 #endif
 
 

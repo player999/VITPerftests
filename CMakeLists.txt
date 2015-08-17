@@ -10,13 +10,13 @@ set(OPT_IMHEIGHT "500" CACHE STRING "Test image height")
 
 # Todo(vadym) On Windows need to configure OpenCL paths
 option(CV_ORIGINAL "Non-OpenCL OpenCV 3" OFF)
-option(CV_INTEL_CPU "OpenCL on Intel CPU OpenCV 3" OFF)
+option(CV_INTEL_CPU "OpenCL on Intel CPU OpenCV 3" ON)
 option(CV_INTEL_GPU "OpenCL on Intel GPU OpenCV 3" OFF)
 option(CV_NVIDIA_GPU "OpenCL on NVIDIA GPU OpenCV 3" OFF)
 
 option(VIT_SDK "VIT AutoSDK 2.5 vipm module" OFF)
 
-option(AF_ORIGINAL "Arrayfire 3 build for CPU" ON)
+option(AF_ORIGINAL "Arrayfire 3 build for CPU" OFF)
 option(AF_CUDA "Arrayfire 3 build for CUDA" OFF)
 option(AF_INTEL_CPU "Arrayfire 3 build for OpenCL for Intel CPU" OFF)
 option(AF_INTEL_GPU "Arrayfire 3 build for OpenCL for Intel GPU" OFF)

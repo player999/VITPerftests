@@ -6,7 +6,7 @@ using namespace af;
 
 std::map<DeviceType, const char *> AFImagePerfTest::devices_names = {
     {kOriginal, ""},
-    {kNvidiaCUDA, "NVIDIA_CUDA"},
+    {kNvidiaCUDA, "NVIDIA CUDA"},
     {kIntelOpenCL, "Intel(R) OpenCL"},
     {kIntelGenOCLDriver, "Intel Gen OCL Driver"}
 };
