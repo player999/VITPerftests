@@ -1,11 +1,12 @@
 #include <iostream>
+
 using namespace std;
 
 #if defined(CV_ORIGINAL)
 # include "tests/opencv_tests.h"
 #endif
 
-#if defined(SDK)
+#if defined(VIT_SDK)
 # include "tests/vipm_tests.h"
 #endif
 
