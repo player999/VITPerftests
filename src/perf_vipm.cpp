@@ -47,9 +47,9 @@ void VipmImagePerfTest::LoadVipmModule() {
     if (BoS_FAILURE(status))
         throw std::runtime_error("Could not load VIPM module");
 
-    if (module_type_ = VipmType::VIPM_IPP)
+    if (VipmType::VIPM_IPP == module_type_)
         _A_modopen1_nlk(module_, vipmipp, NULL);
-    else if (module_type_ = VipmType::VIPM_OPENCV)
+    else if (VipmType::VIPM_OPENCV == module_type_)
         _A_modopen1_nlk(module_, vipmopencv, NULL);
     else
         module_ = _G_vipm_service_default;

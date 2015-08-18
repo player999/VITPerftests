@@ -5,6 +5,7 @@
 #ifndef PERFTESTS_VIPM_TESTS_H
 # define PERFTESTS_VIPM_TESTS_H
 
+# include <stdlib.h>
 # include "perf_vipm.h"
 
 # define SET_VIPM_NAME(x) std::string Name() const { \
@@ -69,14 +70,20 @@ public:
     test_erode_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
+
+        unsigned char strel_data[16] = { 
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00
+        };
+        struct vodi_matparm p;
+
         anchor.pi_x = 6;
         anchor.pi_y = 0;
-        unsigned char strel_data[16] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00 };
-        struct vodi_matparm p;
+
         _VODI_MATPARM_U8(p, 1, 13, 13, 1);
         strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
         vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
+        memset(&state, 0, (sizeof state));
         VipmInitmorphstate(module_, memstorage_, &state, VipmK_BASIC_MORPH,
             wrappedSrcImage_, strel, &anchor, NULL);
     }
@@ -166,7 +173,7 @@ REGISTER_TEST(test_compare_vipm<VIPM_IPP>);
 
 REGISTER_TEST(test_boxfilter_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_resize_vipm<VIPM_OPENCV>);
-//REGISTER_TEST(test_erode_vipm<VIPM_OPENCV>); TODO: Fix Crash
+REGISTER_TEST(test_erode_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_otsu_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_hist_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_compare_vipm<VIPM_OPENCV>);
