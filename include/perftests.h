@@ -78,7 +78,6 @@ class ImagePerfTest {
         test.Postlude(); \
         test.ShowAnalysis(); \
         test.WriteDstImage((test.Name() + ".jpg").c_str()); \
-        std::cout << std::endl; \
     }
 
 # define SET_NAME(x)  std::string Name() const { return std::string(x); }
@@ -88,12 +87,14 @@ class ImagePerfTest {
 # define _xcat(x, y) x ## y
 # define _cat(x, y) _xcat(x, y)
 
-# define REGISTER_TEST(classname) \
-    static struct _cat(AnonymousStruct, __LINE__) { \
-        _cat(AnonymousStruct, __LINE__) () { \
+# define _REGISTER_TEST(classname, unique) \
+    static struct _cat(AnonymousStruct, unique) { \
+    _cat(AnonymousStruct, unique) () { \
             ImagePerfTest::RegisterTest(CREATE_TEST_FN(classname)); \
         } \
-    } _cat(AnonymousVar, __LINE__)
+    } _cat(AnonymousVar, unique)
+
+#define REGISTER_TEST(classname) _REGISTER_TEST(classname, __COUNTER__)
 
 #endif //PERFTESTS_PERFTESTS_H
 
