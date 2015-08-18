@@ -7,6 +7,7 @@
 #include <exception>
 #include <stdexcept>
 #include <cstdio>
+#include <map>
 
 /*
  *
@@ -32,8 +33,23 @@ std::vector<ImagePerfTest::test_fn> ImagePerfTest::tests = {};
  *
  */
 
+enum PrinterColour {
+    kGreen, kRed, kBLue, kPurple, kCyan, kYellow, kWhite
+};
+
+
 #ifdef _WIN32
-#include <Windows.h>
+# include <Windows.h>
+
+static std::map<PrinterColour, int> _s_colour_specifier = {
+    { kGreen,  10 },
+    { kRed,    12 },
+    { kBLue,    9 },
+    { kPurple, 13 },
+    { kCyan,   11 },
+    { kYellow, 14 },
+    { kWhite,  15 }
+};
 
 WORD GetConsoleTextAttribute(HANDLE handle) {
     CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
@@ -41,43 +57,39 @@ WORD GetConsoleTextAttribute(HANDLE handle) {
     return csbiInfo.wAttributes;
 }
 
-#define COLOR_PRINT(name, specifier) \
-    static void print_ ## name(const char *frmt, ...) {        \
-        va_list args;                                          \
-        va_start (args, frmt);                                 \
-        HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);       \
-        WORD old_color_attr = GetConsoleTextAttribute(handle); \
-        SetConsoleTextAttribute(handle, specifier);            \
-        vprintf (frmt, args);                                  \
-        SetConsoleTextAttribute(handle, old_color_attr);       \
-        va_end (args);                                         \
-    }
+static void print_in_(PrinterColour pcolour, const char *frmt, va_list args) {
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    WORD old_color_attr = GetConsoleTextAttribute(handle);
+    SetConsoleTextAttribute(handle, _s_colour_specifier[pcolour]);
+    vprintf(frmt, args);
+    SetConsoleTextAttribute(handle, old_color_attr);
+}
 
-COLOR_PRINT(red, 12)
-COLOR_PRINT(green, 10)
-COLOR_PRINT(blue, 9)
-COLOR_PRINT(purple, 13)
-COLOR_PRINT(cyan, 11)
-COLOR_PRINT(yellow, 14)
-COLOR_PRINT(white, 15)
 #else
-#define COLOR_PRINT(name, specifier) \
-    static void print_ ## name(const char *frmt, ...) {\
-    va_list args; \
-    va_start (args, frmt); \
-    printf("\x1b[" specifier "m");\
-    vprintf (frmt, args); \
-    printf("\x1b[0m");\
-    va_end (args); \
-    }
+static std::map<PrinterColour, const char *> _s_colour_specifier = {
+    { kGreen,  "32" },
+    { kRed,    "31" },
+    { kBLue,   "34" },
+    { kPurple, "35" },
+    { kCyan,   "36" },
+    { kYellow, "33" },
+    { kWhite,  "37" }
+};
 
-COLOR_PRINT(red, "31")
-COLOR_PRINT(green, "32")
-COLOR_PRINT(blue, "34")
-COLOR_PRINT(purple, "35")
-COLOR_PRINT(cyan, "36")
-
+static void print_in_(PrinterColour pcolour, const char *frmt, va_list args) {
+    printf("\x1b[%sm", _s_colour_specifier[pcolour]);
+    vprintf(frmt, args);
+    printf("\x1b[0m");
+}
 #endif
+
+template <PrinterColour pcolour = PrinterColour::kWite>
+void print(const char *frmt, ...) {
+    va_list args;
+    va_start(args, frmt);
+    print_in_(pcolour, frmt, args);
+    va_end(args);
+}
 
 uint64_t ImagePerfTest::Run() {
     typedef std::chrono::system_clock::time_point time_point;
@@ -127,9 +139,9 @@ void ImagePerfTest::ShowAnalysis() const {
     double mean_download = 0;
     double mean_execution = 0;
 
-    print_red("%s\n", Name().c_str());
-    print_cyan("Total test time: %ld usec\n", total_time_);
-    print_cyan("Total runs: %ld times\n\n", runs);
+    print<kRed>("%s\n", Name().c_str());
+    print<kCyan>("Total test time: %ld usec\n", total_time_);
+    print<kCyan>("Total runs: %ld times\n\n", runs);
 
     for (int i = 0; i < runs; i++) {
         total_upload += upload_time_[i];
@@ -137,17 +149,17 @@ void ImagePerfTest::ShowAnalysis() const {
         total_execution += execution_time_[i];
     }
 
-    print_blue("Total upload time: %ld usec\n", total_upload);
-    print_blue("Total execution time: %ld usec\n", total_execution);
-    print_blue("Total download time: %ld usec\n\n", total_download);
+    print<kBLue>("Total upload time: %ld usec\n", total_upload);
+    print<kBLue>("Total execution time: %ld usec\n", total_execution);
+    print<kBLue>("Total download time: %ld usec\n\n", total_download);
 
     mean_upload = (double)total_upload / runs;
     mean_execution = (double)total_execution / runs;
     mean_download = (double)total_download / runs;
 
-    print_purple("Mean upload time: %lf usec\n", mean_upload);
-    print_purple("Mean execution time: %lf usec\n", mean_execution);
-    print_purple("Mean download time: %lf usec\n\n", mean_download);
+    print<kPurple>("Mean upload time: %lf usec\n", mean_upload);
+    print<kPurple>("Mean execution time: %lf usec\n", mean_execution);
+    print<kPurple>("Mean download time: %lf usec\n\n", mean_download);
 
     for (int i = 0; i < runs; i++) {
         stdev_upload += pow((double)upload_time_[i] - mean_upload, 2);
@@ -159,11 +171,12 @@ void ImagePerfTest::ShowAnalysis() const {
     stdev_download = sqrt(stdev_download / runs);
     stdev_execution = sqrt(stdev_execution / runs);
 
-    print_green("STD upload time: %lf usec\n", stdev_upload);
-    print_green("STD execution time: %lf usec\n", stdev_execution);
-    print_green("STD download time: %lf usec\n", stdev_download);
+    print<kGreen>("STD upload time: %lf usec\n", stdev_upload);
+    print<kGreen>("STD execution time: %lf usec\n", stdev_execution);
+    print<kGreen>("STD download time: %lf usec\n", stdev_download);
 
-    print_red("================================================================================\n");
+    print<kRed>("========================================");
+    print<kRed>("========================================\n");
 }
 
 
