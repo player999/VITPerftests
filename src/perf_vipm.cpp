@@ -24,8 +24,7 @@ VipmImagePerfTest::VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype)
     , wrappedDstImage_(nullptr)
     , memstorage_(nullptr)
     , module_type_(modtype)
-    , module_(nullptr)
-    , error_(AORP_ERROR256_ZERO_INITIALIZER) {
+    , module_(nullptr) {
 	memstorage_ = _VodiSMEMSTGopen(memstorage_, NULL, NULL);
     LoadVipmModule();
     buffer2wrapped();
