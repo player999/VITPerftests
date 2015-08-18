@@ -163,7 +163,7 @@ void ImagePerfTest::ShowAnalysis() const {
     print_green("STD execution time: %lf usec\n", stdev_execution);
     print_green("STD download time: %lf usec\n", stdev_download);
 
-    print_red("================================================================================");
+    print_red("================================================================================\n");
 }
 
 
