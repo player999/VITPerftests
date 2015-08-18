@@ -6,14 +6,8 @@
 #include <cstring>
 #include <stdexcept>
 
-VipmImagePerfTest::VipmImagePerfTest(uint32_t height, uint32_t width)
-    : ImagePerfTest (height, width) {
-    memstorage = _VodiSMEMSTGopen(memstorage, NULL, NULL);
-    LoadVipmModule();
-    buffer2wrapped();
-}
-
-VipmImagePerfTest::VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype) : ImagePerfTest (h, w) {
+VipmImagePerfTest::VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype) 
+	: ImagePerfTest (h, w) {
     memstorage = _VodiSMEMSTGopen(memstorage, NULL, NULL);
     SetVipmType(modtype);
     LoadVipmModule();

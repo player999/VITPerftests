@@ -7,17 +7,14 @@
 
 # include "perf_vipm.h"
 
-# undef SET_NAME
-# define SET_NAME(x)  std::string Name() const \
-{\
-    return std::string(x) + std::string("_") + std::string(modname);\
-}\
+# define SET_NAME2(x)  std::string Name() const { \
+    return std::string(x) + std::string("_") + std::string(modname); }
 
 template<VipmType vtype=VIPM_DEFAULT>
 class test_boxfilter_vipm : public VipmImagePerfTest {
  public:
 
-  SET_NAME("Box filter VIPM")
+  SET_NAME2("Box filter VIPM")
   vodi_strel_shape shape;
 
   test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
@@ -39,7 +36,7 @@ template<VipmType vtype=VIPM_DEFAULT>
 class test_resize_vipm : public VipmImagePerfTest {
  public:
 
-  SET_NAME("Resize 2x2 VIPM")
+  SET_NAME2("Resize 2x2 VIPM")
 
   test_resize_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
     set_sq_side(SQSIDE);
@@ -59,7 +56,7 @@ template<VipmType vtype=VIPM_DEFAULT>
 class test_erode_vipm : public VipmImagePerfTest {
 public:
 
-    SET_NAME("Erode VIPM")
+    SET_NAME2("Erode VIPM")
     struct vodi_matrix state;
     vodi_point_t anchor;
     struct vodi_matrix strel_matrix;
@@ -89,7 +86,7 @@ template<VipmType vtype=VIPM_DEFAULT>
 class test_otsu_vipm : public VipmImagePerfTest {
 public:
 
-    SET_NAME("Otsu VIPM")
+    SET_NAME2("Otsu VIPM")
     struct vipm_threshopts opts;
     struct vipm_threshparm parms[2];
 
@@ -116,7 +113,7 @@ template<VipmType vtype=VIPM_DEFAULT>
 class test_hist_vipm : public VipmImagePerfTest {
 public:
 
-    SET_NAME("Histogram Vipm")
+    SET_NAME2("Histogram Vipm")
     NO_OUTPUT_IMAGE
 
     struct vipm_histogram hist[1];
@@ -144,14 +141,14 @@ template<VipmType vtype=VIPM_DEFAULT>
 class test_compare_vipm : public VipmImagePerfTest {
 public:
 
-    SET_NAME("Compare VIPM")
-    float rhs = 128.0f;
+    SET_NAME2("Compare VIPM")
     test_compare_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
     }
 
     void Execute() {
+        float rhs = 128.0f;
         VipmCmp_c(module, memstorage, wrappedDstImage, wrappedSrcImage, &rhs, VipmK_GEQU_CMP, NULL);
     }
 
