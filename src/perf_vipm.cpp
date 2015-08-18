@@ -10,26 +10,23 @@ VipmImagePerfTest::VipmImagePerfTest(uint32_t height, uint32_t width)
     : ImagePerfTest (height, width) {
     bo_status_t status;
     memstorage = _VodiSMEMSTGopen(memstorage, NULL, NULL);
-    if (modname != NULL) {
-        status = AorpMldLoad(modname, NULL, 0, 0, NULL);
-        if (!strcmp(modname, "vipm-ipp")) {
-            _A_modopen1_nlk(module, vipmipp, NULL);
-        }
-        else if (!strcmp(modname, "vipm-opencv")) {
-            _A_modopen1_nlk(module, vipmopencv, NULL);
-        }
-        else {
-            module = _G_vipm_service_default;
-        }
-    }
-    else {
-        status = AorpMldLoad("vipm", NULL, 0, 0, NULL);
-        module = _G_vipm_service_default;
-        modname = "vipm";
-    }
-
+    modname = modname ? modname : "vipm";
+    status = AorpMldLoad(modname, NULL, 0, 0, NULL);
     if (BoS_FAILURE(status))
         throw std::runtime_error("Could not load VIPM module");
+
+    if (!strcmp(modname, "vipm-ipp")) {
+        _A_modopen1_nlk(module, vipmipp, NULL);
+    }
+    else if (!strcmp(modname, "vipm-opencv")) {
+        _A_modopen1_nlk(module, vipmopencv, NULL);
+    }
+    else {
+        module = _G_vipm_service_default;
+    }
+#ifdef _WIN32
+    module = NULL;
+#endif
     buffer2wrapped();
 }
 
