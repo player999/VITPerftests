@@ -83,7 +83,7 @@ static void print_in_(PrinterColour pcolour, const char *frmt, va_list args) {
 }
 #endif
 
-template <PrinterColour pcolour = PrinterColour::kWite>
+template <PrinterColour pcolour = PrinterColour::kWhite>
 void print(const char *frmt, ...) {
     va_list args;
     va_start(args, frmt);
