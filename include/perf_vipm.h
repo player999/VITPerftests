@@ -18,12 +18,14 @@ enum VipmType {
 class VipmImagePerfTest : public ImagePerfTest {
 public:
     VipmImagePerfTest(uint32_t h, uint32_t w);
+    VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype);
     ~VipmImagePerfTest();
 
     const char *modname = NULL;
     aorp_object_t module = NULL;
 
     void SetVipmType(VipmType vtype);
+    void LoadVipmModule();
     void ReadImage(const char *path);
     void WriteSrcImage(const char *path) const;
     void WriteDstImage(const char *path) const;

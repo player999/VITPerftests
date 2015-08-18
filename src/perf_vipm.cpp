@@ -8,8 +8,32 @@
 
 VipmImagePerfTest::VipmImagePerfTest(uint32_t height, uint32_t width)
     : ImagePerfTest (height, width) {
-    bo_status_t status;
     memstorage = _VodiSMEMSTGopen(memstorage, NULL, NULL);
+    LoadVipmModule();
+    buffer2wrapped();
+}
+
+VipmImagePerfTest::VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype) : ImagePerfTest (h, w) {
+    memstorage = _VodiSMEMSTGopen(memstorage, NULL, NULL);
+    SetVipmType(modtype);
+    LoadVipmModule();
+    buffer2wrapped();
+}
+
+VipmImagePerfTest::~VipmImagePerfTest() {
+    _VodiSMEMSTGclear(memstorage);
+    if(wrappedSrcImage)
+        _VodiARRdestroy((vodi_array_t)wrappedSrcImage, memstorage);
+    if(wrappedDstImage)
+        _VodiARRdestroy((vodi_array_t)wrappedDstImage, memstorage);
+    if (!strcmp(modname, "vipm-ipp") || !strcmp(modname, "vipm-opencv")) {
+        _Art_cobclose_nlk(module, NULL);
+    }
+    AorpMldUnload(modname, NULL);
+}
+
+void VipmImagePerfTest::LoadVipmModule() {
+    bo_status_t status;
     if (modname != NULL) {
         status = AorpMldLoad(modname, NULL, 0, 0, NULL);
         if (!strcmp(modname, "vipm-ipp")) {
@@ -30,19 +54,6 @@ VipmImagePerfTest::VipmImagePerfTest(uint32_t height, uint32_t width)
 
     if (BoS_FAILURE(status))
         throw std::runtime_error("Could not load VIPM module");
-    buffer2wrapped();
-}
-
-VipmImagePerfTest::~VipmImagePerfTest() {
-    _VodiSMEMSTGclear(memstorage);
-    if(wrappedSrcImage)
-        _VodiARRdestroy((vodi_array_t)wrappedSrcImage, memstorage);
-    if(wrappedDstImage)
-        _VodiARRdestroy((vodi_array_t)wrappedDstImage, memstorage);
-    if (!strcmp(modname, "vipm-ipp") || !strcmp(modname, "vipm-opencv")) {
-        _Art_cobclose_nlk(module, NULL);
-    }
-    AorpMldUnload(modname, NULL);
 }
 
 void VipmImagePerfTest::ReadImage(const char *path) {

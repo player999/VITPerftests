@@ -7,13 +7,20 @@
 
 # include "perf_vipm.h"
 
+# undef SET_NAME
+# define SET_NAME(x)  std::string Name() const \
+{\
+    return std::string(x) + std::string("_") + std::string(modname);\
+}\
+
+template<VipmType vtype=VIPM_DEFAULT>
 class test_boxfilter_vipm : public VipmImagePerfTest {
  public:
 
   SET_NAME("Box filter VIPM")
   vodi_strel_shape shape;
 
-  test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT) {
+  test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
     shape.sel_anchor.pi_x = 6;
     shape.sel_anchor.pi_y = 6;
     shape.sel_size.sz_height = 13;
@@ -28,12 +35,13 @@ class test_boxfilter_vipm : public VipmImagePerfTest {
 
 };
 
+template<VipmType vtype=VIPM_DEFAULT>
 class test_resize_vipm : public VipmImagePerfTest {
  public:
 
   SET_NAME("Resize 2x2 VIPM")
 
-  test_resize_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+  test_resize_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
     set_sq_side(SQSIDE);
     set_execution_count(RUN_COUNT);
     wrappedDstImage->img_width = wrappedSrcImage->img_width / 2;
@@ -47,6 +55,7 @@ class test_resize_vipm : public VipmImagePerfTest {
 
 };
 
+template<VipmType vtype=VIPM_DEFAULT>
 class test_erode_vipm : public VipmImagePerfTest {
 public:
 
@@ -56,7 +65,7 @@ public:
     struct vodi_matrix strel_matrix;
     vodi_array_t strel;
 
-    test_erode_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+    test_erode_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         anchor.pi_x = 6;
@@ -76,6 +85,7 @@ public:
 
 };
 
+template<VipmType vtype=VIPM_DEFAULT>
 class test_otsu_vipm : public VipmImagePerfTest {
 public:
 
@@ -83,7 +93,7 @@ public:
     struct vipm_threshopts opts;
     struct vipm_threshparm parms[2];
 
-    test_otsu_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+    test_otsu_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         opts.mtho_method = VipmF_THRESH_OTSU_METHOD;
@@ -102,6 +112,7 @@ public:
 
 };
 
+template<VipmType vtype=VIPM_DEFAULT>
 class test_hist_vipm : public VipmImagePerfTest {
 public:
 
@@ -111,7 +122,7 @@ public:
     struct vipm_histogram hist[1];
     struct vipm_hginitarg iarg;
 
-    test_hist_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+    test_hist_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         iarg.mhgp_elemtype = _VodiK_ELEMTYPE_UCHAR;
@@ -129,12 +140,13 @@ public:
 
 };
 
+template<VipmType vtype=VIPM_DEFAULT>
 class test_compare_vipm : public VipmImagePerfTest {
 public:
 
-    SET_NAME("Compare Vipm")
+    SET_NAME("Compare VIPM")
     float rhs = 128.0f;
-    test_compare_vipm() : VipmImagePerfTest(IMWIDTH,IMHEIGHT) {
+    test_compare_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
     }
@@ -145,11 +157,18 @@ public:
 
 };
 
-REGISTER_TEST(test_boxfilter_vipm);
-REGISTER_TEST(test_resize_vipm);
-REGISTER_TEST(test_erode_vipm);
-REGISTER_TEST(test_otsu_vipm);
-REGISTER_TEST(test_hist_vipm);
-REGISTER_TEST(test_compare_vipm);
+REGISTER_TEST(test_boxfilter_vipm<VIPM_IPP>);
+REGISTER_TEST(test_resize_vipm<VIPM_IPP>);
+REGISTER_TEST(test_erode_vipm<VIPM_IPP>);
+REGISTER_TEST(test_otsu_vipm<VIPM_IPP>);
+REGISTER_TEST(test_hist_vipm<VIPM_IPP>);
+REGISTER_TEST(test_compare_vipm<VIPM_IPP>);
+
+REGISTER_TEST(test_boxfilter_vipm<VIPM_OPENCV>);
+REGISTER_TEST(test_resize_vipm<VIPM_OPENCV>);
+//REGISTER_TEST(test_erode_vipm<VIPM_OPENCV>); TODO: Fix Crash
+REGISTER_TEST(test_otsu_vipm<VIPM_OPENCV>);
+REGISTER_TEST(test_hist_vipm<VIPM_OPENCV>);
+REGISTER_TEST(test_compare_vipm<VIPM_OPENCV>);
 
 #endif //PERFTESTS_VIPM_TESTS_H
