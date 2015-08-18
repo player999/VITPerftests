@@ -7,56 +7,60 @@
 
 # include "perf_vipm.h"
 
-# define SET_NAME2(x)  std::string Name() const { \
-    return std::string(x) + std::string("_") + std::string(modname); }
+# define SET_VIPM_NAME(x) std::string Name() const { \
+    return std::string(x) + " " + mod_names[vtype]; }
 
-template<VipmType vtype=VIPM_DEFAULT>
-class test_boxfilter_vipm : public VipmImagePerfTest {
- public:
+#define VIPM_TEST_CLASS(class_name) \
+    template<VipmType vtype = VIPM_DEFAULT> \
+    class class_name : public VipmImagePerfTest
 
-  SET_NAME2("Box filter VIPM")
-  vodi_strel_shape shape;
 
-  test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
-    shape.sel_anchor.pi_x = 6;
-    shape.sel_anchor.pi_y = 6;
-    shape.sel_size.sz_height = 13;
-    shape.sel_size.sz_width = 13;
-    set_sq_side(SQSIDE);
-    set_execution_count(RUN_COUNT);
-  }
+VIPM_TEST_CLASS(test_boxfilter_vipm) {
+public:
+    SET_VIPM_NAME("Box filter VIPM");
+    vodi_strel_shape shape;
 
-  void Execute() {
-    VipmFilter(module, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_BLUR_FILTER, &shape, NULL);
-  }
+    test_boxfilter_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
+        shape.sel_anchor.pi_x = 6;
+        shape.sel_anchor.pi_y = 6;
+        shape.sel_size.sz_height = 13;
+        shape.sel_size.sz_width = 13;
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
 
-};
-
-template<VipmType vtype=VIPM_DEFAULT>
-class test_resize_vipm : public VipmImagePerfTest {
- public:
-
-  SET_NAME2("Resize 2x2 VIPM")
-
-  test_resize_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
-    set_sq_side(SQSIDE);
-    set_execution_count(RUN_COUNT);
-    wrappedDstImage->img_width = wrappedSrcImage->img_width / 2;
-    wrappedDstImage->img_height = wrappedSrcImage->img_height / 2;
-    wrappedDstImage->img_wstride /= 2;
-  }
-
-  void Execute() {
-    VipmResize(module, memstorage, wrappedDstImage, wrappedSrcImage, NULL, VipmK_CUBIC_INTERPOL, NULL);
-  }
+    void Execute() {
+        VipmFilter(module_, memstorage_, wrappedDstImage_, wrappedSrcImage_, 
+            NULL, VipmK_BLUR_FILTER, &shape, NULL);
+    }
 
 };
 
-template<VipmType vtype=VIPM_DEFAULT>
-class test_erode_vipm : public VipmImagePerfTest {
+VIPM_TEST_CLASS(test_resize_vipm) {
 public:
 
-    SET_NAME2("Erode VIPM")
+    SET_VIPM_NAME("Resize 2x2 VIPM")
+
+    test_resize_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        wrappedDstImage_->img_width = wrappedSrcImage_->img_width / 2;
+        wrappedDstImage_->img_height = wrappedSrcImage_->img_height / 2;
+        wrappedDstImage_->img_wstride /= 2;
+    }
+
+    void Execute() {
+        VipmResize(module_, memstorage_, wrappedDstImage_, wrappedSrcImage_,
+            NULL, VipmK_CUBIC_INTERPOL, NULL);
+    }
+
+};
+
+VIPM_TEST_CLASS(test_erode_vipm) {
+public:
+
+    SET_VIPM_NAME("Erode VIPM")
+
     struct vodi_matrix state;
     vodi_point_t anchor;
     struct vodi_matrix strel_matrix;
@@ -67,26 +71,27 @@ public:
         set_execution_count(RUN_COUNT);
         anchor.pi_x = 6;
         anchor.pi_y = 0;
-        unsigned char strel_data[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                                        0x00, 0x00, 0x00};
+        unsigned char strel_data[16] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00 };
         struct vodi_matparm p;
         _VODI_MATPARM_U8(p, 1, 13, 13, 1);
         strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
         vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
-        VipmInitmorphstate(module, memstorage, &state, VipmK_BASIC_MORPH, wrappedSrcImage, strel, &anchor, NULL);
+        VipmInitmorphstate(module_, memstorage_, &state, VipmK_BASIC_MORPH,
+            wrappedSrcImage_, strel, &anchor, NULL);
     }
 
     void Execute() {
-        VipmMorphop_1(module, memstorage, &state, VipmK_MORPH_ERODE, wrappedDstImage, wrappedSrcImage, NULL, NULL);
+        VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_ERODE, 
+            wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
     }
 
 };
 
-template<VipmType vtype=VIPM_DEFAULT>
-class test_otsu_vipm : public VipmImagePerfTest {
+VIPM_TEST_CLASS(test_otsu_vipm) {
 public:
 
-    SET_NAME2("Otsu VIPM")
+    SET_VIPM_NAME("Otsu VIPM")
     struct vipm_threshopts opts;
     struct vipm_threshparm parms[2];
 
@@ -104,16 +109,16 @@ public:
     }
 
     void Execute() {
-        VipmThreshold(module, memstorage, wrappedDstImage, wrappedSrcImage, NULL, &opts, 0, NULL);
+        VipmThreshold(module_, memstorage_, wrappedDstImage_, 
+            wrappedSrcImage_, NULL, &opts, 0, NULL);
     }
 
 };
 
-template<VipmType vtype=VIPM_DEFAULT>
-class test_hist_vipm : public VipmImagePerfTest {
+VIPM_TEST_CLASS(test_hist_vipm) {
 public:
 
-    SET_NAME2("Histogram Vipm")
+    SET_VIPM_NAME("Histogram Vipm")
     NO_OUTPUT_IMAGE
 
     struct vipm_histogram hist[1];
@@ -126,22 +131,19 @@ public:
         iarg.mhgp_numscalepoints = VipmK_STD_IVRANGE_NSCALEPT;
         iarg.mhgp_valrange[0] = VipmK_STD_IVRANGE_MIN;
         iarg.mhgp_valrange[1] = VipmK_STD_IVRANGE_MAX;
-        iarg.mhgp_datasz.sz_width = wrappedSrcImage->img_width;
-        iarg.mhgp_datasz.sz_height = wrappedSrcImage->img_height;
+        iarg.mhgp_datasz.sz_width = wrappedSrcImage_->img_width;
+        iarg.mhgp_datasz.sz_height = wrappedSrcImage_->img_height;
     }
 
     void Execute() {
-        VipmInitHist(module, memstorage, VipmK_HG_CALCULATE, &hist[0], &iarg, NULL);
-        VipmHistogram(module, memstorage, VipmK_HG_CALCULATE, hist, wrappedSrcImage, 0, NULL);
+        VipmInitHist(module_, memstorage_, VipmK_HG_CALCULATE, &hist[0], &iarg, NULL);
+        VipmHistogram(module_, memstorage_, VipmK_HG_CALCULATE, hist, wrappedSrcImage_, 0, NULL);
     }
-
 };
 
-template<VipmType vtype=VIPM_DEFAULT>
-class test_compare_vipm : public VipmImagePerfTest {
+VIPM_TEST_CLASS(test_compare_vipm) {
 public:
-
-    SET_NAME2("Compare VIPM")
+    SET_VIPM_NAME("Compare VIPM")
     test_compare_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
@@ -149,7 +151,8 @@ public:
 
     void Execute() {
         float rhs = 128.0f;
-        VipmCmp_c(module, memstorage, wrappedDstImage, wrappedSrcImage, &rhs, VipmK_GEQU_CMP, NULL);
+        VipmCmp_c(module_, memstorage_, wrappedDstImage_, wrappedSrcImage_,
+            &rhs, VipmK_GEQU_CMP, NULL);
     }
 
 };
