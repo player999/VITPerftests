@@ -16,6 +16,7 @@ CLCVImagePerfTest::CLCVImagePerfTest(uint32_t height, uint32_t width)
     cv::UMatUsageFlags flags =(cv::UMatUsageFlags)(
         cv::USAGE_ALLOCATE_DEVICE_MEMORY | cv::USAGE_ALLOCATE_HOST_MEMORY);
     wrappedDstImageDevice.create(rows, cols, type, flags);
+    wrappedSrcImageDevice.create(rows, cols, type, flags);
 }
 
 void CLCVImagePerfTest::SetOpenCLDevice(CLCVImagePerfTest::DeviceType dtype) {

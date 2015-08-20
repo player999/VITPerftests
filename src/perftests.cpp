@@ -104,6 +104,10 @@ uint64_t ImagePerfTest::Run() {
     download_time_.clear();
     execution_time_.clear();
 
+    for (int i = 0; i < 100; i++) { //Warm-up
+        UploadToDevice(); Execute(); DownloadFromDevice();
+    }
+
     auto total_start = now();
     for (size_t i = 0; i < execution_count_; i++) {
         auto start = now();
