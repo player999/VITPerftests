@@ -3,7 +3,7 @@
 #include <CL/cl.hpp>
 
 #ifdef _WIN32
-# define setenv(var, value, override) _putenv(var"="value"0")
+# define setenv(var, value, override) _putenv(var "=" value "0")
 #endif
 namespace cvocl = cv::ocl;
 

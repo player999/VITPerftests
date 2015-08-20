@@ -7,6 +7,20 @@
 
 # include "perf_opencv_cl.h"
 
+# define SET_NAME_CLCV(x)\
+std::string Name() const {\
+    switch(dtype) {\
+        case CLCVImagePerfTest::DeviceType::CV_CL_CPU:\
+            return std::string(x " CPU" );\
+        case CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU:\
+            return std::string(x " Intel GPU");\
+        case CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU:\
+            return std::string(x " NVIDIA GPU");\
+        default:\
+            return std::string(x);\
+    }\
+}
+
 template<CLCVImagePerfTest::DeviceType dtype>
 struct DeviceSelector {
     DeviceSelector() { CLCVImagePerfTest::SetOpenCLDevice(dtype); }
@@ -16,7 +30,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_boxfilter_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-  SET_NAME("Box filter OpenCV with OpenCL");
+  SET_NAME_CLCV("Box filter OpenCV with OpenCL");
 
   test_boxfilter_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
         set_sq_side(SQSIDE);
@@ -34,7 +48,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_resize_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME("Resize OpenCV 2x2 with OpenCL");
+    SET_NAME_CLCV("Resize OpenCV 2x2 with OpenCL");
 
     test_resize_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
         set_sq_side(SQSIDE);
@@ -50,7 +64,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_integral_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME("Integral image OpenCV with OpenCL");
+    SET_NAME_CLCV("Integral image OpenCV with OpenCL");
 
     test_integral_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
         set_sq_side(SQSIDE);
@@ -66,7 +80,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_morphology_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME("Morphology 1x13 OpenCV with OpenCL");
+    SET_NAME_CLCV("Morphology 1x13 OpenCV with OpenCL");
 
     cv::UMat kernel;
     cv::Point anchor;
@@ -87,7 +101,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_otsu_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME("Otsu OpenCV with OpenCL");
+    SET_NAME_CLCV("Otsu OpenCV with OpenCL");
 
     double thresh;
 
@@ -106,7 +120,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_hist_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME("Hist OpenCV with OpenCL");
+    SET_NAME_CLCV("Hist OpenCV with OpenCL");
     NO_OUTPUT_IMAGE
 
     test_hist_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
@@ -127,7 +141,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_compare_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME("Compare OpenCV with OpenCL");
+    SET_NAME_CLCV("Compare OpenCV with OpenCL");
 
     test_compare_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
         set_sq_side(SQSIDE);
