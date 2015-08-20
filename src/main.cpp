@@ -18,6 +18,10 @@ using namespace std;
 # include "tests/clcv_tests.h"
 #endif
 
+#if defined(CV_CUDA)
+# include "tests/cuda_tests.h"
+#endif
+
 int main() {
     ImagePerfTest::RunAllTests();
     return 0;

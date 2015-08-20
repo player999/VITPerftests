@@ -10,9 +10,10 @@ set(OPT_IMHEIGHT "500" CACHE STRING "Test image height")
 
 # Todo(vadym) On Windows need to configure OpenCL paths
 option(CV_ORIGINAL "Non-OpenCL OpenCV 3" OFF)
-option(CV_INTEL_CPU "OpenCL on Intel CPU OpenCV 3" ON)
+option(CV_INTEL_CPU "OpenCL on Intel CPU OpenCV 3" OFF)
 option(CV_INTEL_GPU "OpenCL on Intel GPU OpenCV 3" OFF)
 option(CV_NVIDIA_GPU "OpenCL on NVIDIA GPU OpenCV 3" OFF)
+option(CV_CUDA "CUDA on NVIDIA GPU OpenCV 3" ON)
 
 option(VIT_SDK "VIT AutoSDK 2.5 vipm module" OFF)
 
@@ -63,6 +64,7 @@ if(WIN32)
 else()
     set(VIT_SDK_LIBS Bo Vodi VodiUTILS pthread)
     set(CV_LIBS opencv_imgcodecs opencv_imgproc opencv_core)
+    set(CV_CUDA_LIBS opencv_cudaimgproc)
 endif()
 
 set(AF_LIBS "")
@@ -83,12 +85,12 @@ set(PERF_LIBPATH "")
 set(PERF_LIBS "")
 set(SOURCE_FILES "")
 
-if ((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU)))
+if ((CV_CUDA) OR ((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU))))
     set(PERF_INCPATH ${PERF_INCPATH} ${CV_INCPATH})
     set(PERF_LIBPATH ${PERF_LIBPATH} ${CV_LIBPATH})
     set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv.cpp include/perf_opencv.h)
     set(PERF_LIBS ${PERF_LIBS} ${CV_LIBS})
-endif((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU)))
+endif((CV_CUDA) OR ((CV_ORIGINAL) OR ((CV_INTEL_CPU) OR (CV_INTEL_GPU OR CV_NVIDIA_GPU))))
 
 if(CV_ORIGINAL)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCV_ORIGINAL")
@@ -151,6 +153,13 @@ elseif((AF_INTEL_CPU) OR (AF_INTEL_GPU OR AF_NVIDIA_GPU))
         message( FATAL_ERROR "You can choose only one option from AF_INTEL_CPU, AF_INTEL_GPU and AF_NVIDIA_GPU" )
     endif((AF_INTEL_CPU) AND (NOT (AF_INTEL_GPU OR AF_NVIDIA_GPU)))
 endif(AF_ORIGINAL)
+
+if(CV_CUDA)
+    set(SOURCE_FILES ${SOURCE_FILES} src/perf_opencv_cuda.cpp include/perf_opencv_cuda.h
+        src/tests/cuda_tests.h)
+    set(PERF_LIBS ${CV_CUDA_LIBS} ${PERF_LIBS})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCV_CUDA")
+endif(CV_CUDA)
 
 include_directories(${PERF_INCPATH})
 link_directories(${PERF_LIBPATH})
