@@ -10,7 +10,6 @@ public:
     void UploadToDevice();
     void DownloadFromDevice();
 
-public:
     cv::cuda::GpuMat wrappedSrcImageDevice;
     cv::cuda::GpuMat wrappedDstImageDevice;
 };

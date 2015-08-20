@@ -64,7 +64,7 @@ if(WIN32)
 else()
     set(VIT_SDK_LIBS Bo Vodi VodiUTILS pthread)
     set(CV_LIBS opencv_imgcodecs opencv_imgproc opencv_core)
-    set(CV_CUDA_LIBS opencv_cudaimgproc)
+    set(CV_CUDA_LIBS opencv_cudaimgproc opencv_cudawarping)
 endif()
 
 set(AF_LIBS "")
