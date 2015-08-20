@@ -80,7 +80,7 @@ template <CLCVImagePerfTest::DeviceType dtype>
 class test_morphology_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
-    SET_NAME_CLCV("Morphology 1x13 OpenCV with OpenCL");
+    SET_NAME_CLCV("Erode 1x13 OpenCV with OpenCL");
 
     cv::UMat kernel;
     cv::Point anchor;
@@ -94,6 +94,28 @@ public:
 
     void Execute() {
         cv::erode(wrappedSrcImageDevice, wrappedDstImageDevice, kernel, anchor, 1, cv::BORDER_REFLECT101);
+    }
+};
+
+template <CLCVImagePerfTest::DeviceType dtype>
+class test_tophat_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
+public:
+
+    SET_NAME_CLCV("Tophat 1x13 OpenCV with OpenCL");
+
+    cv::UMat kernel;
+    cv::Point anchor;
+
+    test_tophat_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel = cv::UMat::ones(1, 13, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void Execute() {
+        cv::morphologyEx(wrappedSrcImageDevice, wrappedDstImageDevice,
+            CV_MOP_TOPHAT, kernel, anchor, 1, cv::BORDER_REFLECT101);
     }
 };
 
@@ -158,6 +180,7 @@ REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 REGISTER_TEST(test_resize_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 REGISTER_TEST(test_integral_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 REGISTER_TEST(test_morphology_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
+REGISTER_TEST(test_tophat_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 REGISTER_TEST(test_otsu_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 REGISTER_TEST(test_hist_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
 REGISTER_TEST(test_compare_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
@@ -168,6 +191,7 @@ REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU
 REGISTER_TEST(test_resize_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
 REGISTER_TEST(test_integral_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
 REGISTER_TEST(test_morphology_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
+REGISTER_TEST(test_tophat_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
 REGISTER_TEST(test_otsu_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
 REGISTER_TEST(test_hist_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
 REGISTER_TEST(test_compare_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
@@ -178,6 +202,7 @@ REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GP
 REGISTER_TEST(test_resize_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
 REGISTER_TEST(test_integral_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
 REGISTER_TEST(test_morphology_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
+REGISTER_TEST(test_tophat_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
 REGISTER_TEST(test_otsu_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
 REGISTER_TEST(test_hist_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
 REGISTER_TEST(test_compare_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);

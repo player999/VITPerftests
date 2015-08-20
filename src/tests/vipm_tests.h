@@ -92,7 +92,43 @@ public:
         VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_ERODE, 
             wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
     }
+};
 
+VIPM_TEST_CLASS(test_tophat_vipm) {
+public:
+
+    SET_VIPM_NAME("Tophat VIPM")
+
+    struct vodi_matrix state;
+    vodi_point_t anchor;
+    struct vodi_matrix strel_matrix;
+    vodi_array_t strel;
+
+    test_tophat_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+
+        unsigned char strel_data[16] = {
+                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00
+        };
+        struct vodi_matparm p;
+
+        anchor.pi_x = 6;
+        anchor.pi_y = 0;
+
+        _VODI_MATPARM_U8(p, 1, 13, 13, 1);
+        strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
+        vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
+        memset(&state, 0, (sizeof state));
+        VipmInitmorphstate(module_, memstorage_, &state, VipmK_BASIC_MORPH,
+                           wrappedSrcImage_, strel, &anchor, NULL);
+    }
+
+    void Execute() {
+        VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_TOPHAT,
+                      wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
+    }
 };
 
 VIPM_TEST_CLASS(test_otsu_vipm) {
@@ -168,6 +204,7 @@ public:
 REGISTER_TEST(test_boxfilter_vipm<VIPM_IPP>);
 REGISTER_TEST(test_resize_vipm<VIPM_IPP>);
 REGISTER_TEST(test_erode_vipm<VIPM_IPP>);
+REGISTER_TEST(test_tophat_vipm<VIPM_IPP>);
 REGISTER_TEST(test_otsu_vipm<VIPM_IPP>);
 REGISTER_TEST(test_hist_vipm<VIPM_IPP>);
 REGISTER_TEST(test_compare_vipm<VIPM_IPP>);
@@ -175,6 +212,7 @@ REGISTER_TEST(test_compare_vipm<VIPM_IPP>);
 REGISTER_TEST(test_boxfilter_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_resize_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_erode_vipm<VIPM_OPENCV>);
+REGISTER_TEST(test_tophat_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_otsu_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_hist_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_compare_vipm<VIPM_OPENCV>);

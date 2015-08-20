@@ -104,7 +104,8 @@ uint64_t ImagePerfTest::Run() {
     download_time_.clear();
     execution_time_.clear();
 
-    for (int i = 0; i < 100; i++) { //Warm-up
+    int warmiter = execution_count() < 5 ? 5 : execution_count() / 10;
+    for (int i = 0; i < warmiter; i++) { //Warm-up
         UploadToDevice(); Execute(); DownloadFromDevice();
     }
 

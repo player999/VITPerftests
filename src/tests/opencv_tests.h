@@ -76,6 +76,28 @@ class test_morphology_cv : public CVImagePerfTest {
   }
 };
 
+class test_tophat_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Tophat 13x1 image OpenCV 3");
+    NO_OUTPUT_IMAGE
+
+    cv::Mat kernel;
+    cv::Point anchor;
+
+    test_morphology_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel = cv::Mat::ones(1, 13, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void Execute() {
+        cv::morphologyEx(wrappedSrcImageHost, wrappedDstImageHost,
+            CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_REFLECT_101);
+    }
+};
+
 class test_otsu_cv : public CVImagePerfTest {
  public:
 
@@ -135,6 +157,7 @@ REGISTER_TEST(test_boxfilter_cv);
 REGISTER_TEST(test_resize_cv);
 REGISTER_TEST(test_integral_cv);
 REGISTER_TEST(test_morphology_cv);
+REGISTER_TEST(test_tophat_cv);
 REGISTER_TEST(test_otsu_cv);
 REGISTER_TEST(test_hist_cv);
 REGISTER_TEST(test_compare_cv);
