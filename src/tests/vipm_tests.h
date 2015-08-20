@@ -107,17 +107,18 @@ public:
         set_execution_count(RUN_COUNT);
         opts.mtho_method = VipmF_THRESH_OTSU_METHOD;
         opts.otsu.mtho_vrange[0] = VipmK_THRESH_DFL_VRANGE;
+        opts.otsu.mtho_global_fthresh = VipmK_INVAL_FTHRESH;
         opts.otsu.mtho_global_factor = 1;
         opts.otsu.mtho_local_factor = 0;
         parms[0].mthp_cmpop = VipmK_LEQU_CMP;
         parms[1].mthp_cmpop = VipmK_GREATER_CMP;
-        parms[0].mthp_val[0] = 0;
-        parms[1].mthp_val[0] = 255;
+        parms[0].mthp_val[0] = 255;
+        parms[1].mthp_val[0] = 0;
     }
 
     void Execute() {
         VipmThreshold(module_, memstorage_, wrappedDstImage_, 
-            wrappedSrcImage_, NULL, &opts, 0, NULL);
+            wrappedSrcImage_, NULL, &opts, 2, parms, NULL);
     }
 
 };
