@@ -147,7 +147,7 @@ REGISTER_TEST(test_resize_cudacv);
 REGISTER_TEST(test_integral_cudacv);
 REGISTER_TEST(test_erode_cudacv);
 REGISTER_TEST(test_tophat_cudacv);
-REGISTER_TEST(test_otsu_cudacv);
+//REGISTER_TEST(test_otsu_cudacv); OTSU is not supported by CUDA
 REGISTER_TEST(test_calchist_cudacv);
 REGISTER_TEST(test_compare_cudacv);
 
