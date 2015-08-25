@@ -112,6 +112,21 @@ public:
     }
 };
 
+class test_compare_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Compare CUDA OpenCV 3");
+
+    test_compare_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        cv::cuda::compare(wrappedSrcImageDevice, 128, wrappedDstImageDevice, cv::CMP_GE);
+    }
+};
+
 REGISTER_TEST(test_boxfilter_cudacv);
 REGISTER_TEST(test_resize_cudacv);
 REGISTER_TEST(test_integral_cudacv);
@@ -119,6 +134,6 @@ REGISTER_TEST(test_erode_cudacv);
 REGISTER_TEST(test_tophat_cudacv);
 //REGISTER_TEST(test_otsu_cudacv); Does not exist in cv::cuda
 REGISTER_TEST(test_calchist_cudacv);
-//REGISTER_TEST(test_compare_cudacv); Does not exist in cv::cuda
+REGISTER_TEST(test_compare_cudacv);
 
 #endif //PERFTESTS_CUDA_TESTS_H
