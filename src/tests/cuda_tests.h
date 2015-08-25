@@ -40,7 +40,24 @@ public:
     }
 };
 
+class test_morphology_cvcl : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Morphology CUDA OpenCV 3");
+
+    test_morphology_cvcl() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        cv::cuda::GpuMat
+    }
+};
+
 REGISTER_TEST(test_calchist_cudacv);
 REGISTER_TEST(test_resize_cudacv);
+//REGISTER_TEST(test_integral_cudacv); Does not exist in cv::cuda
+REGISTER_TEST(test_morphology_cvcl);
 
 #endif //PERFTESTS_CUDA_TESTS_H
