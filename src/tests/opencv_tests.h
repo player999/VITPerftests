@@ -85,7 +85,7 @@ public:
     cv::Mat kernel;
     cv::Point anchor;
 
-    test_morphology_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+    test_tophat_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         kernel = cv::Mat::ones(1, 13, CV_8UC1);
