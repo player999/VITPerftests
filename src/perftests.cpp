@@ -146,7 +146,7 @@ void ImagePerfTest::ShowAnalysis() const {
 
     print<kRed>("%s\n", Name().c_str());
     print<kCyan>("Total test time: %llu usec\n", total_time_);
-    print<kCyan>("Total runs: %ld times\n\n", runs);
+    print<kCyan>("Total runs: %llu times\n\n", runs);
 
     for (int i = 0; i < runs; i++) {
         total_upload += upload_time_[i];
