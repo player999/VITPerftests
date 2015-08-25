@@ -145,7 +145,7 @@ void ImagePerfTest::ShowAnalysis() const {
     double mean_execution = 0;
 
     print<kRed>("%s\n", Name().c_str());
-    print<kCyan>("Total test time: %ld usec\n", total_time_);
+    print<kCyan>("Total test time: %llu usec\n", total_time_);
     print<kCyan>("Total runs: %ld times\n\n", runs);
 
     for (int i = 0; i < runs; i++) {
@@ -154,9 +154,9 @@ void ImagePerfTest::ShowAnalysis() const {
         total_execution += execution_time_[i];
     }
 
-    print<kBLue>("Total upload time: %ld usec\n", total_upload);
-    print<kBLue>("Total execution time: %ld usec\n", total_execution);
-    print<kBLue>("Total download time: %ld usec\n\n", total_download);
+    print<kBLue>("Total upload time: %llu usec\n", total_upload);
+    print<kBLue>("Total execution time: %llu usec\n", total_execution);
+    print<kBLue>("Total download time: %llu usec\n\n", total_download);
 
     mean_upload = (double)total_upload / runs;
     mean_execution = (double)total_execution / runs;
