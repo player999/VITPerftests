@@ -69,6 +69,7 @@ public:
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         kernel_host = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(1, 13), cv::Point(0, 6));
+    }
 
     void Execute() {
         auto filter = cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_host, cv::Point(0, 6), 1);
