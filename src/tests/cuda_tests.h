@@ -13,14 +13,16 @@ public:
 
     SET_NAME("Boxfilter CUDA OpenCV 3");
 
+    cv::Ptr<cv::cuda::Filter> filter;
+
     test_boxfilter_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
+        filter = cv::cuda::createBoxFilter(CV_8UC1, CV_8UC1, cv::Size(13, 13),
+                                           cv::Point(-1, -1), cv::BORDER_REFLECT_101);
     }
 
     void Execute() {
-        auto filter = cv::cuda::createBoxFilter(CV_8UC1, CV_8UC1, cv::Size(13, 13),
-                          cv::Point(-1, -1), cv::BORDER_REFLECT_101);
         filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
 };
@@ -61,15 +63,16 @@ public:
     SET_NAME("Erode 13x1 CUDA OpenCV 3");
 
     cv::Mat kernel_host;
+    cv::Ptr<cv::cuda::Filter> filter;
 
     test_erode_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         kernel_host = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(1, 13), cv::Point(0, 6));
+        filter =  cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, CV_8UC1, kernel_host, cv::Point(0, 6), 1);
     }
 
     void Execute() {
-        auto filter =  cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, CV_8UC1, kernel_host, cv::Point(0, 6), 1);
         filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
 };
@@ -80,15 +83,16 @@ public:
     SET_NAME("Tophat 13x1 CUDA OpenCV 3");
 
     cv::Mat kernel_host;
+    cv::Ptr<cv::cuda::Filter> filter;
 
     test_tophat_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
         kernel_host = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(1, 13), cv::Point(0, 6));
+        filter = cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_host, cv::Point(0, 6), 1);
     }
 
     void Execute() {
-        auto filter = cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_host, cv::Point(0, 6), 1);
         filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
 };
