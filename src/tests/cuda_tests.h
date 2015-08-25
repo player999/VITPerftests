@@ -5,6 +5,81 @@
 # include "perf_opencv_cuda.h"
 # include <opencv2/cudaimgproc.hpp>
 # include <opencv2/cudawarping.hpp>
+# include <opencv2/cudafilters.hpp>
+
+class test_boxfilter_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Resize 2x2 CUDA OpenCV 3");
+
+    test_boxfilter_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        auto filter = cv::cuda::createBoxFilter(CV_8UC1, CV_8UC1, cv::Size(12, 13),
+                          cv::Point(-1, -1), cv::BORDER_REFLECT_101);
+        filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
+    }
+};
+
+class test_resize_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Resize 2x2 CUDA OpenCV 3");
+
+    test_resize_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        cv::cuda::resize(wrappedSrcImageDevice, wrappedDstImageDevice, cv::Size(), 0.5, 0.5, CV_INTER_CUBIC);
+    }
+};
+
+class test_erode_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Erode 13x1 CUDA OpenCV 3");
+
+    cv::Mat kernel_host;
+    cv::cuda::GpuMat kernel_device;
+
+    test_erode_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel_host = cv::Mat::ones(1, 13, CV_8UC1);
+        kernel_host = 0xFF;
+        kernel_device.upload(kernel_host);
+    }
+
+    void Execute() {
+        cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, CV_8UC1, kernel_device, cv::Point(0, 6), 1);
+    }
+};
+
+class test_tophat_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Erode 13x1 CUDA OpenCV 3");
+
+    cv::Mat kernel_host;
+    cv::cuda::GpuMat kernel_device;
+
+    test_tophat_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel_host = cv::Mat::ones(1, 13, CV_8UC1);
+        kernel_host = 0xFF;
+        kernel_device.upload(kernel_host);
+    }
+
+    void Execute() {
+        cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_device, cv::Point(0, 6), 1);
+    }
+};
 
 class test_calchist_cudacv : public CUDACVImagePerfTest {
 public:
@@ -25,39 +100,13 @@ public:
     }
 };
 
-class test_resize_cudacv : public CUDACVImagePerfTest {
-public:
-
-    SET_NAME("Resize 2x2 CUDA OpenCV 3");
-
-    test_resize_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
-        set_sq_side(SQSIDE);
-        set_execution_count(RUN_COUNT);
-    }
-
-    void Execute() {
-        cv::cuda::resize(wrappedSrcImageDevice, wrappedDstImageDevice, cv::Size(), 0.5, 0.5, CV_INTER_CUBIC);
-    }
-};
-
-class test_morphology_cvcl : public CUDACVImagePerfTest {
-public:
-
-    SET_NAME("Morphology CUDA OpenCV 3");
-
-    test_morphology_cvcl() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
-        set_sq_side(SQSIDE);
-        set_execution_count(RUN_COUNT);
-    }
-
-    void Execute() {
-        cv::cuda::GpuMat
-    }
-};
-
-REGISTER_TEST(test_calchist_cudacv);
+REGISTER_TEST(test_boxfilter_cudacv);
 REGISTER_TEST(test_resize_cudacv);
 //REGISTER_TEST(test_integral_cudacv); Does not exist in cv::cuda
-REGISTER_TEST(test_morphology_cvcl);
+REGISTER_TEST(test_erode_cudacv);
+REGISTER_TEST(test_tophat_cudacv);
+//REGISTER_TEST(test_otsu_cudacv); Does not exist in cv::cuda
+REGISTER_TEST(test_calchist_cudacv);
+//REGISTER_TEST(test_compare_cudacv); Does not exist in cv::cuda
 
 #endif //PERFTESTS_CUDA_TESTS_H
