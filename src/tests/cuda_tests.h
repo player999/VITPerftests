@@ -6,6 +6,7 @@
 # include <opencv2/cudaimgproc.hpp>
 # include <opencv2/cudawarping.hpp>
 # include <opencv2/cudafilters.hpp>
+# include <opencv2/cudaarithm.hpp>
 
 class test_boxfilter_cudacv : public CUDACVImagePerfTest {
 public:
@@ -36,6 +37,21 @@ public:
 
     void Execute() {
         cv::cuda::resize(wrappedSrcImageDevice, wrappedDstImageDevice, cv::Size(), 0.5, 0.5, CV_INTER_CUBIC);
+    }
+};
+
+class test_integral_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Integral image CUDA OpenCV 3");
+
+    test_integral_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        cv::cuda::integral(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
 };
 
@@ -98,7 +114,7 @@ public:
 
 REGISTER_TEST(test_boxfilter_cudacv);
 REGISTER_TEST(test_resize_cudacv);
-//REGISTER_TEST(test_integral_cudacv); Does not exist in cv::cuda
+REGISTER_TEST(test_integral_cudacv);
 REGISTER_TEST(test_erode_cudacv);
 REGISTER_TEST(test_tophat_cudacv);
 //REGISTER_TEST(test_otsu_cudacv); Does not exist in cv::cuda
