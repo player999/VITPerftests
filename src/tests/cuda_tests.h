@@ -10,7 +10,7 @@
 class test_boxfilter_cudacv : public CUDACVImagePerfTest {
 public:
 
-    SET_NAME("Resize 2x2 CUDA OpenCV 3");
+    SET_NAME("Boxfilter CUDA OpenCV 3");
 
     test_boxfilter_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
         set_sq_side(SQSIDE);
@@ -18,7 +18,7 @@ public:
     }
 
     void Execute() {
-        auto filter = cv::cuda::createBoxFilter(CV_8UC1, CV_8UC1, cv::Size(12, 13),
+        auto filter = cv::cuda::createBoxFilter(CV_8UC1, CV_8UC1, cv::Size(13, 13),
                           cv::Point(-1, -1), cv::BORDER_REFLECT_101);
         filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
@@ -56,14 +56,15 @@ public:
     }
 
     void Execute() {
-        cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, CV_8UC1, kernel_device, cv::Point(0, 6), 1);
+        auto filter =  cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, CV_8UC1, kernel_device, cv::Point(0, 6), 1);
+        filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
 };
 
 class test_tophat_cudacv : public CUDACVImagePerfTest {
 public:
 
-    SET_NAME("Erode 13x1 CUDA OpenCV 3");
+    SET_NAME("Tophat 13x1 CUDA OpenCV 3");
 
     cv::Mat kernel_host;
     cv::cuda::GpuMat kernel_device;
@@ -77,7 +78,8 @@ public:
     }
 
     void Execute() {
-        cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_device, cv::Point(0, 6), 1);
+        auto filter = cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_device, cv::Point(0, 6), 1);
+        filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
     }
 };
 

@@ -16,5 +16,5 @@ void CUDACVImagePerfTest::UploadToDevice() {
 }
 
 void CUDACVImagePerfTest::DownloadFromDevice() {
-    wrappedDstImageDevice.download(wrappedDstImageDevice);
+    wrappedDstImageDevice.download(wrappedDstImageHost);
 }
