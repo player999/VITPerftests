@@ -93,6 +93,21 @@ public:
     }
 };
 
+class test_otsu_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("OTSU CUDA OpenCV 3");
+
+    test_otsu_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+    }
+
+    void Execute() {
+        cv::cuda::threshold(wrappedSrcImageDevice, wrappedDstImageDevice, 128.0, 255.0, cv::THRESH_OTSU);
+    }
+};
+
 class test_calchist_cudacv : public CUDACVImagePerfTest {
 public:
 
@@ -132,7 +147,7 @@ REGISTER_TEST(test_resize_cudacv);
 REGISTER_TEST(test_integral_cudacv);
 REGISTER_TEST(test_erode_cudacv);
 REGISTER_TEST(test_tophat_cudacv);
-//REGISTER_TEST(test_otsu_cudacv); Does not exist in cv::cuda
+REGISTER_TEST(test_otsu_cudacv);
 REGISTER_TEST(test_calchist_cudacv);
 REGISTER_TEST(test_compare_cudacv);
 
