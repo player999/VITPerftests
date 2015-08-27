@@ -204,6 +204,7 @@ public:
 
 };
 
+# if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
 REGISTER_TEST(test_boxfilter_vipm<VIPM_IPP>);
 REGISTER_TEST(test_resize_vipm<VIPM_IPP>);
 REGISTER_TEST(test_erode_vipm<VIPM_IPP>);
@@ -211,6 +212,7 @@ REGISTER_TEST(test_tophat_vipm<VIPM_IPP>);
 REGISTER_TEST(test_otsu_vipm<VIPM_IPP>);
 REGISTER_TEST(test_hist_vipm<VIPM_IPP>);
 REGISTER_TEST(test_compare_vipm<VIPM_IPP>);
+# endif
 
 REGISTER_TEST(test_boxfilter_vipm<VIPM_OPENCV>);
 REGISTER_TEST(test_resize_vipm<VIPM_OPENCV>);

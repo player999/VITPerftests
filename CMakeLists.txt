@@ -120,7 +120,7 @@ if(CV_NVIDIA_GPU)
 endif(CV_NVIDIA_GPU)
 
 if(VIT_SDK)
-    set(PERF_INCPATH "${PERF_INCPATH}" "${VIT_SDK_INCPATH}")
+    set(PERF_INCPATH "${PERF_INCPATH}" "${VIT_SDK_INCPATH}" "/src/Vodi2.world/truck_olvia/src/include/bwr" "/src/Bo2.world/trunk/src/include")
     set(PERF_LIBPATH ${PERF_LIBPATH} ${VIT_SDK_LIBPATH})
     set(PERF_LIBS ${PERF_LIBS} ${VIT_SDK_LIBS})
     set(SOURCE_FILES ${SOURCE_FILES} src/perf_vipm.cpp include/perf_vipm.h
