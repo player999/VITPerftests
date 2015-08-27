@@ -21,7 +21,7 @@ class ImagePerfTest {
     ImagePerfTest(uint32_t height, uint32_t width);
     virtual ~ImagePerfTest() {}
 
-    // TODO(taras) Do we need Prelude and Postlude?
+    // TODO(taras) Do we need Prelude and Postlude? Let it be (Vadym)
     virtual void Prelude();  // Executed before run
     virtual void Postlude(); // Executed after run
     uint64_t Run();

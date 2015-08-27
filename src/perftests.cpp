@@ -93,13 +93,29 @@ void print(const char *frmt, ...) {
 }
 
 uint64_t ImagePerfTest::Run() {
-    typedef std::chrono::system_clock::time_point time_point;
-    auto now = std::chrono::high_resolution_clock::now;
+#ifdef _WIN32
+	LARGE_INTEGER perf_freq;
+	QueryPerformanceFrequency(&perf_freq);
 
-    auto time_diff =  [](time_point &time_end, time_point &time_start) {
-      return (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
-          time_end - time_start).count();
-    };
+	auto now = []() -> uint64_t {
+		LARGE_INTEGER count;
+		QueryPerformanceCounter(&count);
+		return count.QuadPart;
+	};
+
+	auto time_diff =  [perf_freq](uint64_t time_end, uint64_t time_start) {
+		return (uint64_t)((time_end - time_start) / (perf_freq.QuadPart / 1000000));
+	};
+
+#else
+	typedef std::chrono::system_clock::time_point time_point;
+	auto now = std::chrono::high_resolution_clock::now;
+
+	auto time_diff = [](time_point &time_end, time_point &time_start) {
+		return (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
+			time_end - time_start).count();
+	};
+#endif
 
     upload_time_.clear();
     download_time_.clear();
