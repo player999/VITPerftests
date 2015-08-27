@@ -127,10 +127,6 @@ uint64_t ImagePerfTest::Run() {
     auto total_stop = now();
     total_time_ = time_diff(total_stop, total_start);
 
-    auto u64_cmp = [](const uint64_t &elem1, const uint64_t &elem2) {
-        return (int) (elem1 > elem2 ? 1 : elem1 < elem2 ? -1 : 0);
-    };
-
     std::sort(upload_time_.begin(), upload_time_.end());
     std::sort(execution_time_.begin(), execution_time_.end());
     std::sort(download_time_.begin(), download_time_.end());
