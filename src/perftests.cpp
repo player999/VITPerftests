@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <cstdio>
 #include <map>
+#include <algorithm>
 
 /*
  *
@@ -125,6 +126,15 @@ uint64_t ImagePerfTest::Run() {
     }
     auto total_stop = now();
     total_time_ = time_diff(total_stop, total_start);
+
+    auto u64_cmp = [](const uint64_t &elem1, const uint64_t &elem2) {
+        return (int) (elem1 > elem2 ? 1 : elem1 < elem2 ? -1 : 0);
+    };
+
+    std::sort(upload_time_.begin(), upload_time_.end());
+    std::sort(execution_time_.begin(), execution_time_.end());
+    std::sort(download_time_.begin(), download_time_.end());
+
     return total_time_;
 }
 
@@ -140,6 +150,11 @@ void ImagePerfTest::ShowAnalysis() const {
     double stdev_upload = 0;
     double stdev_download = 0;
     double stdev_execution = 0;
+
+    double median_upload = 0;
+    double median_download = 0;
+    double median_execution = 0;
+
     double mean_upload = 0;
     double mean_download = 0;
     double mean_execution = 0;
@@ -166,6 +181,24 @@ void ImagePerfTest::ShowAnalysis() const {
     print<kPurple>("Mean execution time: %lf usec\n", mean_execution);
     print<kPurple>("Mean download time: %lf usec\n\n", mean_download);
 
+    int mid = download_time_.size() / 2;
+    if (upload_time_.size() % 2) {
+        // Odd
+        median_upload = upload_time_[mid];
+        median_execution = execution_time_[mid];
+        median_download = download_time_[mid];
+    }
+    else {
+        // Even
+        median_upload = (upload_time_[mid - 1] + upload_time_[mid]) / 2;
+        median_execution = (execution_time_[mid - 1] + execution_time_[mid]) / 2;
+        median_download = (download_time_[mid - 1] + download_time_[mid]) / 2;
+    }
+
+    print<kYellow>("Median upload time: %lf usec\n", median_upload);
+    print<kYellow>("Median execution time: %lf usec\n", median_execution);
+    print<kYellow>("Median download time: %lf usec\n\n", median_download);
+
     for (int i = 0; i < runs; i++) {
         stdev_upload += pow((double)upload_time_[i] - mean_upload, 2);
         stdev_download += pow((double)download_time_[i] - mean_download, 2);
@@ -179,6 +212,7 @@ void ImagePerfTest::ShowAnalysis() const {
     print<kGreen>("STD upload time: %lf usec\n", stdev_upload);
     print<kGreen>("STD execution time: %lf usec\n", stdev_execution);
     print<kGreen>("STD download time: %lf usec\n", stdev_download);
+
 
     print<kRed>("========================================");
     print<kRed>("========================================\n");
