@@ -104,13 +104,16 @@ public:
     struct vodi_matrix strel_matrix;
     vodi_array_t strel;
 
+    struct aorp_error *err;
+    struct aorp_error256 err256;
+
     test_tophat_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
 
         unsigned char strel_data[16] = {
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00
+                0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
+                0x1, 0x1, 0x1, 0x1, 0x1, 0x0, 0x0, 0x0
         };
         struct vodi_matparm p;
 
@@ -121,13 +124,13 @@ public:
         strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
         vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
         memset(&state, 0, (sizeof state));
-        VipmInitmorphstate(module_, memstorage_, &state, VipmK_BASIC_MORPH,
+        VipmInitmorphstate(module_, memstorage_, &state, VipmK_ADVANCED_MORPH,
                            wrappedSrcImage_, strel, &anchor, NULL);
     }
 
     void Execute() {
         VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_TOPHAT,
-                      wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
+                      wrappedDstImage_, wrappedSrcImage_, NULL, err);
     }
 };
 
