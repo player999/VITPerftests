@@ -9,19 +9,45 @@
 # include <iostream>
 # include <cstring>
 
+enum TestPlatform {
+    kVipmIPP,
+    kVipmOpenCV,
+    kOpenCV3,
+    kAFIntel
+};
+
+enum TestType {
+    kBoxFilter,
+    kOtsu,
+    kMedianFilter,
+    kResize,
+    kIntegral,
+    kMorphology,
+    kTopHat,
+    kHist,
+    kCompare,
+
+    kUnknown
+};
+
 class ImagePerfTest {
  public:
-    typedef void (* test_fn)();
-    static std::vector<test_fn> tests;
+    typedef void(*test_fn)();
+    struct TestNode {
+        test_fn      test_function;
+        TestPlatform test_platform;
+        TestType     test_type;
+    };
+    
+    static std::vector<TestNode> tests;
 
-    static void RunAllTests();
-    static void RegisterTest(test_fn test);
+    static void RunAllTests(bool order_by_test_type = false);
+    static void RegisterTest(const TestNode &test_node);
 
     ImagePerfTest();
     ImagePerfTest(uint32_t height, uint32_t width);
     virtual ~ImagePerfTest() {}
 
-    // TODO(taras) Do we need Prelude and Postlude? Let it be (Vadym)
     virtual void Prelude();  // Executed before run
     virtual void Postlude(); // Executed after run
     uint64_t Run();
@@ -56,7 +82,7 @@ class ImagePerfTest {
     void CheckerBoard();
 
  protected:
-  uint8_t  *img_buffer = NULL;
+    uint8_t  *img_buffer = NULL;
 
  private:
     uint32_t image_width_;
@@ -88,14 +114,16 @@ class ImagePerfTest {
 # define _xcat(x, y) x ## y
 # define _cat(x, y) _xcat(x, y)
 
-# define _REGISTER_TEST(classname, unique) \
+# define _REGISTER_TEST(platform, test_type, classname, unique) \
     static struct _cat(AnonymousStruct, unique) { \
-    _cat(AnonymousStruct, unique) () { \
-            ImagePerfTest::RegisterTest(CREATE_TEST_FN(classname)); \
+        _cat(AnonymousStruct, unique) () { \
+            auto fn = CREATE_TEST_FN(classname); \
+            ImagePerfTest::TestNode tnode = { fn, platform, test_type }; \
+            ImagePerfTest::RegisterTest(tnode); \
         } \
     } _cat(AnonymousVar, unique)
 
-#define REGISTER_TEST(classname) _REGISTER_TEST(classname, __COUNTER__)
+#define REGISTER_TEST(platform, test_type, classname) \
+    _REGISTER_TEST(platform, test_type, classname, __COUNTER__)
 
 #endif //PERFTESTS_PERFTESTS_H
-

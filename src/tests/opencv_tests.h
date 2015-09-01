@@ -153,13 +153,17 @@ class test_compare_cv : public CVImagePerfTest {
   }
 };
 
-REGISTER_TEST(test_boxfilter_cv);
-REGISTER_TEST(test_resize_cv);
-REGISTER_TEST(test_integral_cv);
-REGISTER_TEST(test_morphology_cv);
-REGISTER_TEST(test_tophat_cv);
-REGISTER_TEST(test_otsu_cv);
-REGISTER_TEST(test_hist_cv);
-REGISTER_TEST(test_compare_cv);
+#define REGISTER_OPENCV_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kOpenCV3, test_type, classname)
 
+REGISTER_OPENCV_TEST(TestType::kBoxFilter, test_boxfilter_cv);
+REGISTER_OPENCV_TEST(TestType::kResize, test_resize_cv);
+REGISTER_OPENCV_TEST(TestType::kIntegral, test_integral_cv);
+REGISTER_OPENCV_TEST(TestType::kMorphology, test_morphology_cv);
+REGISTER_OPENCV_TEST(TestType::kTopHat, test_tophat_cv);
+REGISTER_OPENCV_TEST(TestType::kOtsu, test_otsu_cv);
+REGISTER_OPENCV_TEST(TestType::kHist, test_hist_cv);
+REGISTER_OPENCV_TEST(TestType::kCompare, test_compare_cv);
+
+#undef REGISTER_OPENCV_TEST
 #endif //PERFTESTS_OPENCV_TESTS_H

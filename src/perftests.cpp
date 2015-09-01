@@ -27,7 +27,7 @@ ImagePerfTest::ImagePerfTest(uint32_t height, uint32_t width)
     CheckerBoard();
 }
 
-std::vector<ImagePerfTest::test_fn> ImagePerfTest::tests = {};
+std::vector<ImagePerfTest::TestNode> ImagePerfTest::tests = {};
 /*
  *
  * MAIN FUNCTIONS
@@ -94,27 +94,27 @@ void print(const char *frmt, ...) {
 
 uint64_t ImagePerfTest::Run() {
 #ifdef _WIN32
-	LARGE_INTEGER perf_freq;
-	QueryPerformanceFrequency(&perf_freq);
+    LARGE_INTEGER perf_freq;
+    QueryPerformanceFrequency(&perf_freq);
 
-	auto now = []() -> uint64_t {
-		LARGE_INTEGER count;
-		QueryPerformanceCounter(&count);
-		return count.QuadPart;
-	};
+    auto now = []() -> uint64_t {
+        LARGE_INTEGER count;
+        QueryPerformanceCounter(&count);
+        return count.QuadPart;
+    };
 
 	auto time_diff =  [perf_freq](uint64_t time_end, uint64_t time_start) {
 		return (uint64_t)((time_end - time_start) / (perf_freq.QuadPart / 1000000));
 	};
 
 #else
-	typedef std::chrono::system_clock::time_point time_point;
-	auto now = std::chrono::high_resolution_clock::now;
+    typedef std::chrono::system_clock::time_point time_point;
+    auto now = std::chrono::high_resolution_clock::now;
 
-	auto time_diff = [](time_point &time_end, time_point &time_start) {
-		return (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
-			time_end - time_start).count();
-	};
+    auto time_diff = [](time_point &time_end, time_point &time_start) {
+        return (uint64_t)std::chrono::duration_cast<std::chrono::microseconds>(
+            time_end - time_start).count();
+    };
 #endif
 
     upload_time_.clear();
@@ -309,18 +309,33 @@ void ImagePerfTest::DownloadFromDevice() {
     // Default implementation
 }
 
-void ImagePerfTest::RunAllTests() {
+void ImagePerfTest::RunAllTests(bool order_by_test_type) {
+    auto all_tests = tests;
+
     try {
-        for (auto test: ImagePerfTest::tests)
-            test();
+        while (all_tests.size()) {
+            TestType cur_test_type = all_tests[0].test_type;
+            std::for_each(all_tests.begin(), all_tests.end(), 
+                [=](const TestNode &tnode) {
+                    if (tnode.test_type == cur_test_type || !order_by_test_type)
+                        tnode.test_function();
+                }
+            );
+
+            std::remove_if(all_tests.begin(), all_tests.end(),
+                [=](const TestNode &tnode) {
+                    return (tnode.test_type == cur_test_type || !order_by_test_type);
+                }
+            );
+        }
     }
     catch (std::exception &e) {
         printf("An error is occured, reason: %s\n", e.what());
     }
 }
 
-void ImagePerfTest::RegisterTest(ImagePerfTest::test_fn test) {
-    ImagePerfTest::tests.push_back(test);
+void ImagePerfTest::RegisterTest(const ImagePerfTest::TestNode &tnode) {
+    ImagePerfTest::tests.push_back(tnode);
 }
 
 void ImagePerfTest::Prelude() {
