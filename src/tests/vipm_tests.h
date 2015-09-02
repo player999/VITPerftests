@@ -146,27 +146,27 @@ public:
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
 
-        unsigned char strel_data[52] = {
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0
+        unsigned char strel_data[] = {
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1
         };
         struct vodi_matparm p;
 
         anchor.pi_x = 0;
         anchor.pi_y = 6;
 
-        _VODI_MATPARM_U8(p, 13, 1, 4, 1);
+        _VODI_MATPARM_U8(p, 13, 1, 1, 1);
         strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
         vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
         memset(&state, 0, (sizeof state));
@@ -194,20 +194,20 @@ public:
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
 
-        unsigned char strel_data[52] = {
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0,
-                0x1, 0x0, 0x0, 0x0
+        unsigned char strel_data[] = {
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1,
+                0x1
         };
 
         struct vodi_matparm p;
@@ -215,7 +215,7 @@ public:
         anchor.pi_x = 0;
         anchor.pi_y = 6;
 
-        _VODI_MATPARM_U8(p, 13, 1, 4, 1);
+        _VODI_MATPARM_U8(p, 13, 1, 1, 1);
         strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
         vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
         memset(&state, 0, (sizeof state));
