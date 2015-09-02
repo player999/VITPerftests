@@ -253,7 +253,7 @@ REGISTER_CLGPU_TEST(TestType::kCompare, test_compare_cvcl);
 
 #if defined(CV_NVIDIA_GPU)
 #  define REGISTER_CLCUDAGPU_TEST(test_type, classname) \
-	REGISTER_TEST(TestPlatform::kOpenCV3CLCudaGPU , test_type,
+	REGISTER_TEST(TestPlatform::kOpenCV3CLCudaGPU, test_type, \
 	classname<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>)
 REGISTER_CLCUDAGPU_TEST(TestType::kBoxFilter, test_boxfilter_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kResize, test_resize_cvcl);
