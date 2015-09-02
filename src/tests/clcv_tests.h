@@ -120,6 +120,50 @@ public:
 };
 
 template <CLCVImagePerfTest::DeviceType dtype>
+class test_morphology_vert_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
+public:
+
+    SET_NAME_CLCV("Erode 13x1 OpenCV with OpenCL");
+
+    cv::UMat kernel;
+    cv::Point anchor;
+
+    test_morphology_vert_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel = cv::UMat::ones(13, 1, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void Execute() {
+        cv::erode(wrappedSrcImageDevice, wrappedDstImageDevice, kernel, anchor, 1, cv::BORDER_REFLECT101);
+    }
+};
+
+template <CLCVImagePerfTest::DeviceType dtype>
+class test_tophat_vert_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
+public:
+
+    SET_NAME_CLCV("Tophat 13x1 OpenCV with OpenCL");
+
+    cv::UMat kernel;
+    cv::Point anchor;
+
+    test_tophat_vert_cvcl() : CLCVImagePerfTest(IMWIDTH, IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel = cv::UMat::ones(13, 1, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void Execute() {
+        cv::morphologyEx(wrappedSrcImageDevice, wrappedDstImageDevice,
+                         CV_MOP_TOPHAT, kernel, anchor, 1, cv::BORDER_REFLECT101);
+    }
+};
+
+
+template <CLCVImagePerfTest::DeviceType dtype>
 class test_otsu_cvcl : DeviceSelector<dtype>, public CLCVImagePerfTest {
 public:
 
@@ -184,6 +228,8 @@ REGISTER_CLCPU_TEST(TestType::kResize, test_resize_cvcl);
 REGISTER_CLCPU_TEST(TestType::kIntegral, test_integral_cvcl);
 REGISTER_CLCPU_TEST(TestType::kMorphology, test_morphology_cvcl);
 REGISTER_CLCPU_TEST(TestType::kTopHat, test_tophat_cvcl);
+REGISTER_CLCPU_TEST(TestType::kMorphology, test_morphology_vert_cvcl);
+REGISTER_CLCPU_TEST(TestType::kTopHat, test_tophat_vert_cvcl);
 REGISTER_CLCPU_TEST(TestType::kOtsu, test_otsu_cvcl);
 REGISTER_CLCPU_TEST(TestType::kHist, test_hist_cvcl);
 REGISTER_CLCPU_TEST(TestType::kCompare, test_compare_cvcl);
@@ -198,6 +244,8 @@ REGISTER_CLGPU_TEST(TestType::kResize, test_resize_cvcl);
 REGISTER_CLGPU_TEST(TestType::kIntegral, test_integral_cvcl);
 REGISTER_CLGPU_TEST(TestType::kMorphology, test_morphology_cvcl);
 REGISTER_CLGPU_TEST(TestType::kTopHat, test_tophat_cvcl);
+REGISTER_CLGPU_TEST(TestType::kMorphology, test_morphology_vert_cvcl);
+REGISTER_CLGPU_TEST(TestType::kTopHat, test_tophat_vert_cvcl);
 REGISTER_CLGPU_TEST(TestType::kOtsu, test_otsu_cvcl);
 REGISTER_CLGPU_TEST(TestType::kHist, test_hist_cvcl);
 REGISTER_CLGPU_TEST(TestType::kCompare, test_compare_cvcl);
@@ -212,6 +260,8 @@ REGISTER_CLCUDAGPU_TEST(TestType::kResize, test_resize_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kIntegral, test_integral_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kMorphology, test_morphology_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kTopHat, test_tophat_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kMorphology, test_morphology_vert_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kTopHat, test_tophat_vert_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kOtsu, test_otsu_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kHist, test_hist_cvcl);
 REGISTER_CLCUDAGPU_TEST(TestType::kCompare, test_compare_cvcl);

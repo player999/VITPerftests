@@ -60,7 +60,7 @@ public:
 class test_erode_cudacv : public CUDACVImagePerfTest {
 public:
 
-    SET_NAME("Erode 13x1 CUDA OpenCV 3");
+    SET_NAME("Erode 1x13 CUDA OpenCV 3");
 
     cv::Mat kernel_host;
     cv::Ptr<cv::cuda::Filter> filter;
@@ -80,7 +80,7 @@ public:
 class test_tophat_cudacv : public CUDACVImagePerfTest {
 public:
 
-    SET_NAME("Tophat 13x1 CUDA OpenCV 3");
+    SET_NAME("Tophat 1x13 CUDA OpenCV 3");
 
     cv::Mat kernel_host;
     cv::Ptr<cv::cuda::Filter> filter;
@@ -90,6 +90,46 @@ public:
         set_execution_count(RUN_COUNT);
         kernel_host = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(1, 13), cv::Point(0, 6));
         filter = cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_host, cv::Point(0, 6), 1);
+    }
+
+    void Execute() {
+        filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
+    }
+};
+
+class test_erode_vert_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Erode 13x1 CUDA OpenCV 3");
+
+    cv::Mat kernel_host;
+    cv::Ptr<cv::cuda::Filter> filter;
+
+    test_erode_vert_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel_host = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(13, 1), cv::Point(6, 0));
+        filter =  cv::cuda::createMorphologyFilter(cv::MORPH_ERODE, CV_8UC1, kernel_host, cv::Point(6, 0), 1);
+    }
+
+    void Execute() {
+        filter->apply(wrappedSrcImageDevice, wrappedDstImageDevice);
+    }
+};
+
+class test_tophat_vert_cudacv : public CUDACVImagePerfTest {
+public:
+
+    SET_NAME("Tophat 13x1 CUDA OpenCV 3");
+
+    cv::Mat kernel_host;
+    cv::Ptr<cv::cuda::Filter> filter;
+
+    test_tophat_vert_cudacv() : CUDACVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel_host = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(13, 1), cv::Point(6, 0));
+        filter = cv::cuda::createMorphologyFilter(cv::MORPH_TOPHAT, CV_8UC1, kernel_host, cv::Point(6, 0), 1);
     }
 
     void Execute() {
@@ -149,12 +189,14 @@ public:
 # define REGISTER_CVCUDA_TEST(test_type, classname) \
 	REGISTER_TEST(TestPlatform::kOpenCV3CUDA, test_type, classname)
 
-REGISTER_CVCUDA_TEST(kBoxFilter, test_boxfilter_cudacv);
-REGISTER_CVCUDA_TEST(kResize, test_resize_cudacv);
-REGISTER_CVCUDA_TEST(kIntegral, test_integral_cudacv);
-REGISTER_CVCUDA_TEST(kMorphology, test_erode_cudacv);
-REGISTER_CVCUDA_TEST(kTopHat, test_tophat_cudacv);
-REGISTER_CVCUDA_TEST(kHist, test_calchist_cudacv);
-REGISTER_CVCUDA_TEST(kCompare, test_compare_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kBoxFilter, test_boxfilter_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kResize, test_resize_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kIntegral, test_integral_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kMorphology, test_erode_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kTopHat, test_tophat_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kMorphology, test_erode_vert_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kTopHat, test_tophat_vert_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kHist, test_calchist_cudacv);
+REGISTER_CVCUDA_TEST(TestType::kCompare, test_compare_cudacv);
 
 #endif //PERFTESTS_CUDA_TESTS_H

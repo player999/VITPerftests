@@ -61,7 +61,7 @@ public:
 VIPM_TEST_CLASS(test_erode_vipm) {
 public:
 
-    SET_VIPM_NAME("Erode VIPM")
+    SET_VIPM_NAME("Erode 1x13 VIPM")
 
     struct vodi_matrix state;
     vodi_point_t anchor;
@@ -98,15 +98,12 @@ public:
 VIPM_TEST_CLASS(test_tophat_vipm) {
 public:
 
-    SET_VIPM_NAME("Tophat VIPM")
+    SET_VIPM_NAME("Tophat 1x13 VIPM")
 
     struct vodi_matrix state;
     vodi_point_t anchor;
     struct vodi_matrix strel_matrix;
     vodi_array_t strel;
-
-    struct aorp_error *err;
-    struct aorp_error256 err256;
 
     test_tophat_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
@@ -131,7 +128,104 @@ public:
 
     void Execute() {
         VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_TOPHAT,
-                      wrappedDstImage_, wrappedSrcImage_, NULL, err);
+                      wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
+    }
+};
+
+VIPM_TEST_CLASS(test_erode_vert_vipm) {
+public:
+
+    SET_VIPM_NAME("Erode Vertical 13x1 VIPM")
+
+    struct vodi_matrix state;
+    vodi_point_t anchor;
+    struct vodi_matrix strel_matrix;
+    vodi_array_t strel;
+
+    test_erode_vert__vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+
+        unsigned char strel_data[52] = {
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0
+        };
+        struct vodi_matparm p;
+
+        anchor.pi_x = 0;
+        anchor.pi_y = 6;
+
+        _VODI_MATPARM_U8(p, 13, 1, 4, 1);
+        strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
+        vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
+        memset(&state, 0, (sizeof state));
+        VipmInitmorphstate(module_, memstorage_, &state, VipmK_BASIC_MORPH,
+                           wrappedSrcImage_, strel, &anchor, NULL);
+    }
+
+    void Execute() {
+        VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_ERODE,
+                      wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
+    }
+};
+
+VIPM_TEST_CLASS(test_tophat_vert_vipm) {
+public:
+
+    SET_VIPM_NAME("Tophat Vertical 13x1 VIPM")
+
+    struct vodi_matrix state;
+    vodi_point_t anchor;
+    struct vodi_matrix strel_matrix;
+    vodi_array_t strel;
+
+    test_tophat_vert_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+
+        unsigned char strel_data[52] = {
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0,
+                0x1, 0x0, 0x0, 0x0
+        };
+
+        struct vodi_matparm p;
+
+        anchor.pi_x = 0;
+        anchor.pi_y = 6;
+
+        _VODI_MATPARM_U8(p, 13, 1, 4, 1);
+        strel = _VodiMATinitheader(&strel_matrix, &p, NULL);
+        vodi_array_p(strel)->ipar_base = (bo_pointer_t)strel_data;
+        memset(&state, 0, (sizeof state));
+        VipmInitmorphstate(module_, memstorage_, &state, VipmK_ADVANCED_MORPH,
+                           wrappedSrcImage_, strel, &anchor, NULL);
+    }
+
+    void Execute() {
+        VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_TOPHAT,
+                      wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
     }
 };
 
@@ -212,6 +306,8 @@ REGISTER_VIPMIPP_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kResize, test_resize_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kMorphology, test_erode_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kTopHat, test_tophat_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kMorphology, test_erode_vert_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kTopHat, test_tophat_vert_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kOtsu, test_otsu_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kHist, test_hist_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kCompare, test_compare_vipm);
@@ -222,6 +318,8 @@ REGISTER_VIPMOCV_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kResize, test_resize_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kMorphology, test_erode_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kTopHat, test_tophat_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kMorphology, test_erode_vert_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kTopHat, test_tophat_vert_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kOtsu, test_otsu_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kHist, test_hist_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kCompare, test_compare_vipm);
