@@ -142,7 +142,7 @@ public:
     struct vodi_matrix strel_matrix;
     vodi_array_t strel;
 
-    test_erode_vert__vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
+    test_erode_vert_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
 
