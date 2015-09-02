@@ -322,11 +322,13 @@ void ImagePerfTest::RunAllTests(bool order_by_test_type) {
                 }
             );
 
-            std::remove_if(all_tests.begin(), all_tests.end(),
+            auto new_end = std::remove_if(all_tests.begin(), all_tests.end(),
                 [=](const TestNode &tnode) {
                     return (tnode.test_type == cur_test_type || !order_by_test_type);
                 }
             );
+
+            all_tests.erase(new_end, all_tests.end());
         }
     }
     catch (std::exception &e) {
