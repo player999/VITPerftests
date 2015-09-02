@@ -146,13 +146,15 @@ public:
     }
 };
 
-REGISTER_TEST(test_boxfilter_cudacv);
-REGISTER_TEST(test_resize_cudacv);
-REGISTER_TEST(test_integral_cudacv);
-REGISTER_TEST(test_erode_cudacv);
-REGISTER_TEST(test_tophat_cudacv);
-//REGISTER_TEST(test_otsu_cudacv); OTSU is not supported by CUDA
-REGISTER_TEST(test_calchist_cudacv);
-REGISTER_TEST(test_compare_cudacv);
+# define REGISTER_CVCUDA_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kOpenCV3CUDA, test_type, classname)
+
+REGISTER_CVCUDA_TEST(kBoxFilter, test_boxfilter_cudacv);
+REGISTER_CVCUDA_TEST(kResize, test_resize_cudacv);
+REGISTER_CVCUDA_TEST(kIntegral, test_integral_cudacv);
+REGISTER_CVCUDA_TEST(kMorphology, test_erode_cudacv);
+REGISTER_CVCUDA_TEST(kTopHat, test_tophat_cudacv);
+REGISTER_CVCUDA_TEST(kHist, test_calchist_cudacv);
+REGISTER_CVCUDA_TEST(kCompare, test_compare_cudacv);
 
 #endif //PERFTESTS_CUDA_TESTS_H

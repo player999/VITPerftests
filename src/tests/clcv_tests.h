@@ -176,36 +176,45 @@ public:
 };
 
 #if defined(CV_INTEL_CPU)
-REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_resize_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_integral_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_morphology_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_tophat_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_otsu_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_hist_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
-REGISTER_TEST(test_compare_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_CPU>);
+#  define REGISTER_CLCPU_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kOpenCVCLCPU3 , test_type, \
+    classname<CLCVImagePerfTest::DeviceType::CV_CL_CPU>)
+REGISTER_CLCPU_TEST(TestType::kBoxFilter, test_boxfilter_cvcl);
+REGISTER_CLCPU_TEST(TestType::kResize, test_resize_cvcl);
+REGISTER_CLCPU_TEST(TestType::kIntegral, test_integral_cvcl);
+REGISTER_CLCPU_TEST(TestType::kMorphology, test_morphology_cvcl);
+REGISTER_CLCPU_TEST(TestType::kTopHat, test_tophat_cvcl);
+REGISTER_CLCPU_TEST(TestType::kOtsu, test_otsu_cvcl);
+REGISTER_CLCPU_TEST(TestType::kHist, test_hist_cvcl);
+REGISTER_CLCPU_TEST(TestType::kCompare, test_compare_cvcl);
 #endif
 
 #if defined(CV_INTEL_GPU)
-REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_resize_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_integral_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_morphology_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_tophat_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_otsu_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_hist_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
-REGISTER_TEST(test_compare_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>);
+#  define REGISTER_CLGPU_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kOpenCV3CLIntelGPU, test_type, \
+    classname<CLCVImagePerfTest::DeviceType::CV_CL_INTEL_GPU>)
+REGISTER_CLGPU_TEST(TestType::kBoxFilter, test_boxfilter_cvcl);
+REGISTER_CLGPU_TEST(TestType::kResize, test_resize_cvcl);
+REGISTER_CLGPU_TEST(TestType::kIntegral, test_integral_cvcl);
+REGISTER_CLGPU_TEST(TestType::kMorphology, test_morphology_cvcl);
+REGISTER_CLGPU_TEST(TestType::kTopHat, test_tophat_cvcl);
+REGISTER_CLGPU_TEST(TestType::kOtsu, test_otsu_cvcl);
+REGISTER_CLGPU_TEST(TestType::kHist, test_hist_cvcl);
+REGISTER_CLGPU_TEST(TestType::kCompare, test_compare_cvcl);
 #endif
 
 #if defined(CV_NVIDIA_GPU)
-REGISTER_TEST(test_boxfilter_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_resize_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_integral_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_morphology_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_tophat_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_otsu_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_hist_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
-REGISTER_TEST(test_compare_cvcl<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>);
+#  define REGISTER_CLCUDAGPU_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kOpenCV3CLCudaGPU , test_type,
+	classname<CLCVImagePerfTest::DeviceType::CV_CL_NVIDIA_GPU>)
+REGISTER_CLCUDAGPU_TEST(TestType::kBoxFilter, test_boxfilter_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kResize, test_resize_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kIntegral, test_integral_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kMorphology, test_morphology_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kTopHat, test_tophat_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kOtsu, test_otsu_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kHist, test_hist_cvcl);
+REGISTER_CLCUDAGPU_TEST(TestType::kCompare, test_compare_cvcl);
 #endif
 
 #endif //PERFTESTS_CLCV_TESTS_H

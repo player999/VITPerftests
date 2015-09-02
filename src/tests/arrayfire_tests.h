@@ -136,6 +136,7 @@ public:
     }
 };
 
+//@TODO: Rewrite me in new manner
 #if defined(AF_ORIGINAL) || defined(AF_CUDA)
 REGISTER_TEST(test_boxfilter_af<kOriginal>);
 REGISTER_TEST(test_resize_af<kOriginal>);

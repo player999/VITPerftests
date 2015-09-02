@@ -58,7 +58,7 @@ class test_integral_cv : public CVImagePerfTest {
 class test_morphology_cv : public CVImagePerfTest {
  public:
 
-  SET_NAME("Erode image OpenCV 3");
+  SET_NAME("Erode 1x13 image OpenCV 3");
   NO_OUTPUT_IMAGE
 
   cv::Mat kernel;
@@ -79,7 +79,7 @@ class test_morphology_cv : public CVImagePerfTest {
 class test_tophat_cv : public CVImagePerfTest {
 public:
 
-    SET_NAME("Tophat 13x1 image OpenCV 3");
+    SET_NAME("Tophat 1x13 image OpenCV 3");
     NO_OUTPUT_IMAGE
 
     cv::Mat kernel;
@@ -95,6 +95,49 @@ public:
     void Execute() {
         cv::morphologyEx(wrappedSrcImageHost, wrappedDstImageHost,
             CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_REFLECT_101);
+    }
+};
+
+class test_morphology_vert_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Erode 13x1 image OpenCV 3");
+    NO_OUTPUT_IMAGE
+
+    cv::Mat kernel;
+    cv::Point anchor;
+
+    test_morphology_vert_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel = cv::Mat::ones(13, 1, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void Execute() {
+        cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_REFLECT101);
+    }
+};
+
+class test_tophat_vert_cv : public CVImagePerfTest {
+public:
+
+    SET_NAME("Tophat 13x1 image OpenCV 3");
+    NO_OUTPUT_IMAGE
+
+    cv::Mat kernel;
+    cv::Point anchor;
+
+    test_tophat_vert_cv() : CVImagePerfTest(IMWIDTH,IMHEIGHT) {
+        set_sq_side(SQSIDE);
+        set_execution_count(RUN_COUNT);
+        kernel = cv::Mat::ones(13, 1, CV_8UC1);
+        anchor = cv::Point(-1, -1);
+    }
+
+    void Execute() {
+        cv::morphologyEx(wrappedSrcImageHost, wrappedDstImageHost,
+                         CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_REFLECT_101);
     }
 };
 
@@ -161,6 +204,8 @@ REGISTER_OPENCV_TEST(TestType::kResize, test_resize_cv);
 REGISTER_OPENCV_TEST(TestType::kIntegral, test_integral_cv);
 REGISTER_OPENCV_TEST(TestType::kMorphology, test_morphology_cv);
 REGISTER_OPENCV_TEST(TestType::kTopHat, test_tophat_cv);
+REGISTER_OPENCV_TEST(TestType::kMorphology, test_morphology_vert_cv);
+REGISTER_OPENCV_TEST(TestType::kTopHat, test_tophat_vert_cv);
 REGISTER_OPENCV_TEST(TestType::kOtsu, test_otsu_cv);
 REGISTER_OPENCV_TEST(TestType::kHist, test_hist_cv);
 REGISTER_OPENCV_TEST(TestType::kCompare, test_compare_cv);

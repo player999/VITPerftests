@@ -13,6 +13,10 @@ enum TestPlatform {
     kVipmIPP,
     kVipmOpenCV,
     kOpenCV3,
+    kOpenCVCLCPU3,
+    kOpenCV3CLIntelGPU,
+    kOpenCV3CLCudaGPU,
+    kOpenCV3CUDA,
     kAFIntel
 };
 
@@ -26,7 +30,6 @@ enum TestType {
     kTopHat,
     kHist,
     kCompare,
-
     kUnknown
 };
 

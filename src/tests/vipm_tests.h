@@ -7,6 +7,7 @@
 
 # include <stdlib.h>
 # include "perf_vipm.h"
+#include "../../include/perftests.h"
 
 # define SET_VIPM_NAME(x) std::string Name() const { \
     return std::string(x) + " " + mod_names[vtype]; }
@@ -205,21 +206,25 @@ public:
 };
 
 # if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
-REGISTER_TEST(test_boxfilter_vipm<VIPM_IPP>);
-REGISTER_TEST(test_resize_vipm<VIPM_IPP>);
-REGISTER_TEST(test_erode_vipm<VIPM_IPP>);
-REGISTER_TEST(test_tophat_vipm<VIPM_IPP>);
-REGISTER_TEST(test_otsu_vipm<VIPM_IPP>);
-REGISTER_TEST(test_hist_vipm<VIPM_IPP>);
-REGISTER_TEST(test_compare_vipm<VIPM_IPP>);
+#  define REGISTER_VIPMIPP_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kVipmIPP , test_type, classname<VIPM_IPP>)
+REGISTER_VIPMIPP_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kResize, test_resize_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kMorphology, test_erode_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kTopHat, test_tophat_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kOtsu, test_otsu_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kHist, test_hist_vipm);
+REGISTER_VIPMIPP_TEST(TestType::kCompare, test_compare_vipm);
 # endif
-
-REGISTER_TEST(test_boxfilter_vipm<VIPM_OPENCV>);
-REGISTER_TEST(test_resize_vipm<VIPM_OPENCV>);
-REGISTER_TEST(test_erode_vipm<VIPM_OPENCV>);
-REGISTER_TEST(test_tophat_vipm<VIPM_OPENCV>);
-REGISTER_TEST(test_otsu_vipm<VIPM_OPENCV>);
-REGISTER_TEST(test_hist_vipm<VIPM_OPENCV>);
-REGISTER_TEST(test_compare_vipm<VIPM_OPENCV>);
+#  define REGISTER_VIPMOCV_TEST(test_type, classname) \
+	REGISTER_TEST(TestPlatform::kVipmOpenCV , test_type, classname<VIPM_OPENCV>)
+REGISTER_VIPMOCV_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kResize, test_resize_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kMorphology, test_erode_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kTopHat, test_tophat_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kOtsu, test_otsu_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kHist, test_hist_vipm);
+REGISTER_VIPMOCV_TEST(TestType::kCompare, test_compare_vipm);
 
 #endif //PERFTESTS_VIPM_TESTS_H
+
