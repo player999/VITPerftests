@@ -210,7 +210,7 @@ void ImagePerfTest::Analyze() {
 void ImagePerfTest::ShowAnalysis() const {
     print<kRed>("%s\n", Name().c_str());
     print<kCyan>("Total test time: %llu usec\n", total_time_);
-    print<kCyan>("Total runs: %llu times\n\n", execution_count_);
+    print<kCyan>("Total runs: %lu times\n\n", execution_count_);
 
     print<kBLue>("Total upload time: %llu usec\n", total_upload_);
     print<kBLue>("Total execution time: %llu usec\n", total_execution_);
