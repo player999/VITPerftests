@@ -18,7 +18,7 @@ std::map<VipmType, const char *> VipmImagePerfTest::mod_names = {
     { VIPM_OPENCV, "vipm-opencv" }
 };
 
-VipmImagePerfTest::VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype) 
+VipmImagePerfTest::VipmImagePerfTest(uint32_t h, uint32_t w, VipmType modtype)
     : ImagePerfTest(h, w)
     , wrappedSrcImage_(nullptr)
     , wrappedDstImage_(nullptr)
