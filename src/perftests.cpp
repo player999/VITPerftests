@@ -159,7 +159,7 @@ void ImagePerfTest::Analyze() {
     total_upload_ = 0;
     total_download_ = 0;
     total_execution_ = 0;
-    uint64_t runs = upload_time_.size();
+    uint64_t runs =
     stdev_upload_ = 0;
     stdev_download_ = 0;
     stdev_execution_ = 0;
@@ -210,7 +210,7 @@ void ImagePerfTest::Analyze() {
 void ImagePerfTest::ShowAnalysis() const {
     print<kRed>("%s\n", Name().c_str());
     print<kCyan>("Total test time: %llu usec\n", total_time_);
-    print<kCyan>("Total runs: %llu times\n\n", upload_time_.size());
+    print<kCyan>("Total runs: %llu times\n\n", execution_count_);
 
     print<kBLue>("Total upload time: %llu usec\n", total_upload_);
     print<kBLue>("Total execution time: %llu usec\n", total_execution_);
@@ -264,7 +264,7 @@ void ImagePerfTest::WriteCSV() const {
     csv.open(_g_result_fname, std::ios::app);
     csv<<Name()<<",";
     csv<<total_time_<<",";
-    csv<<upload_time_.size()<<",";
+    csv<<execution_count_<<",";
 
     csv<<total_upload_<<",";
     csv<<total_execution_<<",";
