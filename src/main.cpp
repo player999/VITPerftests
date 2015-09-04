@@ -2,6 +2,8 @@
 
 using namespace std;
 
+char *_g_result_fname = "results.csv";
+
 #if defined(CV_ORIGINAL)
 # include "tests/opencv_tests.h"
 #endif

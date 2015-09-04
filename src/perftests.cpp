@@ -2,13 +2,14 @@
 #include "perftests.h"
 #include <chrono>
 #include <cmath>
-#include <cstring>
 #include <cstdarg>
-#include <exception>
 #include <stdexcept>
-#include <cstdio>
 #include <map>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
+
+extern char *_g_result_fname;
 
 /*
  *
@@ -229,6 +230,60 @@ void ImagePerfTest::ShowAnalysis() const {
 
     print<kRed>("========================================");
     print<kRed>("========================================\n");
+}
+
+void ImagePerfTest::WriteCSV() const {
+    std::ofstream csv;
+
+    std::ifstream checkfile(_g_result_fname);
+    if (!checkfile.good()) {
+        checkfile.close();
+
+        csv.open(_g_result_fname);
+        csv<<"Name"<<",";
+        csv<<"Total"<<",";
+        csv<<"Runs"<<",";
+        csv<<"Total Up"<<",";
+        csv<<"Total Ex"<<",";
+        csv<<"Total Dn"<<",";
+        csv<<"Mean Up"<<",";
+        csv<<"Mean Ex"<<",";
+        csv<<"Mean Dn"<<",";
+        csv<<"Med Up"<<",";
+        csv<<"Med Ex"<<",";
+        csv<<"Med Dn"<<",";
+        csv<<"Std Up"<<",";
+        csv<<"Std Ex"<<",";
+        csv<<"Std Dn"<<",";
+        csv<<std::endl;
+        csv.close();
+    }
+
+
+
+    csv.open(_g_result_fname, std::ios::app);
+    csv<<Name()<<",";
+    csv<<total_time_<<",";
+    csv<<upload_time_.size()<<",";
+
+    csv<<total_upload_<<",";
+    csv<<total_execution_<<",";
+    csv<<total_download_<<",";
+
+    csv<<mean_upload_<<",";
+    csv<<mean_execution_<<",";
+    csv<<mean_download_<<",";
+
+    csv<<median_upload_<<",";
+    csv<<median_execution_<<",";
+    csv<<median_download_<<",";
+
+    csv<<stdev_upload_<<",";
+    csv<<stdev_execution_<<",";
+    csv<<stdev_download_<<",";
+
+    csv<<std::endl;
+    csv.close();
 }
 
 

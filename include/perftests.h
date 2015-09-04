@@ -62,6 +62,7 @@ class ImagePerfTest {
     void Analyze();
 
     void ShowAnalysis() const;
+    void WriteCSV() const;
 
     void set_image_height(uint32_t height) { image_height_ = height; }
     uint32_t image_height() const { return image_height_; }
@@ -128,6 +129,7 @@ class ImagePerfTest {
         test.Postlude(); \
         test.Analyze(); \
         test.ShowAnalysis(); \
+        test.WriteCSV(); \
         test.WriteDstImage((test.Name() + ".jpg").c_str()); \
     }
 
