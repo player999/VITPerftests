@@ -18,12 +18,12 @@ extern char *_g_result_fname;
  */
 
 ImagePerfTest::ImagePerfTest()
-    : image_width_(0), image_height_(0), execution_count_(1), sq_side_(20) {
+    : image_width_(1000), image_height_(1000), execution_count_(RUN_COUNT), sq_side_(SQSIDE) {
 }
 
 ImagePerfTest::ImagePerfTest(uint32_t height, uint32_t width)
     : image_width_(width), image_height_(height),
-      execution_count_(1), sq_side_(20)  {
+      execution_count_(RUN_COUNT), sq_side_(SQSIDE)  {
     this->AllocateImage();
     CheckerBoard();
 }
