@@ -154,77 +154,78 @@ void ImagePerfTest::Execute() {
     throw std::runtime_error("Function Execute is not defined");
 }
 
-void ImagePerfTest::ShowAnalysis() const {
-    uint64_t total_upload = 0;
-    uint64_t total_download = 0;
-    uint64_t total_execution = 0;
+void ImagePerfTest::Analyze() {
+    total_upload_ = 0;
+    total_download_ = 0;
+    total_execution_ = 0;
     uint64_t runs = upload_time_.size();
-    double stdev_upload = 0;
-    double stdev_download = 0;
-    double stdev_execution = 0;
+    stdev_upload_ = 0;
+    stdev_download_ = 0;
+    stdev_execution_ = 0;
 
-    double median_upload = 0;
-    double median_download = 0;
-    double median_execution = 0;
+    median_upload_ = 0;
+    median_download_ = 0;
+    median_execution_ = 0;
 
-    double mean_upload = 0;
-    double mean_download = 0;
-    double mean_execution = 0;
-
-    print<kRed>("%s\n", Name().c_str());
-    print<kCyan>("Total test time: %llu usec\n", total_time_);
-    print<kCyan>("Total runs: %llu times\n\n", runs);
+    mean_upload_ = 0;
+    mean_download_ = 0;
+    mean_execution_ = 0;
 
     for (int i = 0; i < runs; i++) {
-        total_upload += upload_time_[i];
-        total_download += download_time_[i];
-        total_execution += execution_time_[i];
+        total_upload_ += upload_time_[i];
+        total_download_ += download_time_[i];
+        total_execution_ += execution_time_[i];
     }
 
-    print<kBLue>("Total upload time: %llu usec\n", total_upload);
-    print<kBLue>("Total execution time: %llu usec\n", total_execution);
-    print<kBLue>("Total download time: %llu usec\n\n", total_download);
-
-    mean_upload = (double)total_upload / runs;
-    mean_execution = (double)total_execution / runs;
-    mean_download = (double)total_download / runs;
-
-    print<kPurple>("Mean upload time: %lf usec\n", mean_upload);
-    print<kPurple>("Mean execution time: %lf usec\n", mean_execution);
-    print<kPurple>("Mean download time: %lf usec\n\n", mean_download);
+    mean_upload_ = (double)total_upload_ / runs;
+    mean_execution_ = (double)total_execution_ / runs;
+    mean_download_ = (double)total_download_ / runs;
 
     int mid = download_time_.size() / 2;
     if (upload_time_.size() % 2) {
         // Odd
-        median_upload = upload_time_[mid];
-        median_execution = execution_time_[mid];
-        median_download = download_time_[mid];
+        median_upload_ = upload_time_[mid];
+        median_execution_ = execution_time_[mid];
+        median_download_ = download_time_[mid];
     }
     else {
         // Even
-        median_upload = (upload_time_[mid - 1] + upload_time_[mid]) / 2;
-        median_execution = (execution_time_[mid - 1] + execution_time_[mid]) / 2;
-        median_download = (download_time_[mid - 1] + download_time_[mid]) / 2;
+        median_upload_ = (upload_time_[mid - 1] + upload_time_[mid]) / 2;
+        median_execution_ = (execution_time_[mid - 1] + execution_time_[mid]) / 2;
+        median_download_ = (download_time_[mid - 1] + download_time_[mid]) / 2;
     }
-
-    print<kYellow>("Median upload time: %lf usec\n", median_upload);
-    print<kYellow>("Median execution time: %lf usec\n", median_execution);
-    print<kYellow>("Median download time: %lf usec\n\n", median_download);
 
     for (int i = 0; i < runs; i++) {
-        stdev_upload += pow((double)upload_time_[i] - mean_upload, 2);
-        stdev_download += pow((double)download_time_[i] - mean_download, 2);
-        stdev_execution += pow((double)execution_time_[i] - mean_execution, 2);
+        stdev_upload_ += pow((double)upload_time_[i] - mean_upload_, 2);
+        stdev_download_ += pow((double)download_time_[i] - mean_download_, 2);
+        stdev_execution_ += pow((double)execution_time_[i] - mean_execution_, 2);
     }
 
-    stdev_upload = sqrt(stdev_upload / runs);
-    stdev_download = sqrt(stdev_download / runs);
-    stdev_execution = sqrt(stdev_execution / runs);
+    stdev_upload_ = sqrt(stdev_upload_ / runs);
+    stdev_download_ = sqrt(stdev_download_ / runs);
+    stdev_execution_ = sqrt(stdev_execution_ / runs);
+}
 
-    print<kGreen>("STD upload time: %lf usec\n", stdev_upload);
-    print<kGreen>("STD execution time: %lf usec\n", stdev_execution);
-    print<kGreen>("STD download time: %lf usec\n", stdev_download);
+void ImagePerfTest::ShowAnalysis() const {
+    print<kRed>("%s\n", Name().c_str());
+    print<kCyan>("Total test time: %llu usec\n", total_time_);
+    print<kCyan>("Total runs: %llu times\n\n", upload_time_.size());
 
+    print<kBLue>("Total upload time: %llu usec\n", total_upload_);
+    print<kBLue>("Total execution time: %llu usec\n", total_execution_);
+    print<kBLue>("Total download time: %llu usec\n\n", total_download_);
+
+    print<kPurple>("Mean upload time: %lf usec\n", mean_upload_);
+    print<kPurple>("Mean execution time: %lf usec\n", mean_execution_);
+    print<kPurple>("Mean download time: %lf usec\n\n", mean_download_);
+
+    print<kYellow>("Median upload time: %lf usec\n", median_upload_);
+    print<kYellow>("Median execution time: %lf usec\n", median_execution_);
+    print<kYellow>("Median download time: %lf usec\n\n", median_download_);
+
+    print<kGreen>("STD upload time: %lf usec\n", stdev_upload_);
+    print<kGreen>("STD execution time: %lf usec\n", stdev_execution_);
+    print<kGreen>("STD download time: %lf usec\n", stdev_download_);
 
     print<kRed>("========================================");
     print<kRed>("========================================\n");

@@ -7,7 +7,7 @@
 
 # include <stdlib.h>
 # include "perf_vipm.h"
-#include "../../include/perftests.h"
+# include "../../include/perftests.h"
 
 # define SET_VIPM_NAME(x) std::string Name() const { \
     return std::string(x) + " " + mod_names[vtype]; }

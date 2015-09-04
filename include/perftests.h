@@ -58,6 +58,9 @@ class ImagePerfTest {
     virtual void UploadToDevice();
     virtual void DownloadFromDevice();
     virtual std::string Name() const;
+
+    void Analyze();
+
     void ShowAnalysis() const;
 
     void set_image_height(uint32_t height) { image_height_ = height; }
@@ -98,6 +101,23 @@ class ImagePerfTest {
     std::vector<uint64_t> download_time_;
     std::vector<uint64_t> execution_time_;
     uint64_t total_time_;
+
+    /* Analysis results */
+    uint64_t total_upload_;
+    uint64_t total_download_;
+    uint64_t total_execution_;
+
+    double stdev_upload_;
+    double stdev_download_;
+    double stdev_execution_;
+
+    double median_upload_;
+    double median_download_;
+    double median_execution_;
+
+    double mean_upload_;
+    double mean_download_;
+    double mean_execution_;
 };
 
 # define CREATE_TEST_FN(classname) \
@@ -106,6 +126,7 @@ class ImagePerfTest {
         test.Prelude(); \
         test.Run(); \
         test.Postlude(); \
+        test.Analyze(); \
         test.ShowAnalysis(); \
         test.WriteDstImage((test.Name() + ".jpg").c_str()); \
     }
