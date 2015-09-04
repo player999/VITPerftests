@@ -159,7 +159,7 @@ void ImagePerfTest::Analyze() {
     total_upload_ = 0;
     total_download_ = 0;
     total_execution_ = 0;
-    uint64_t runs =
+    uint64_t runs = execution_count_;
     stdev_upload_ = 0;
     stdev_download_ = 0;
     stdev_execution_ = 0;

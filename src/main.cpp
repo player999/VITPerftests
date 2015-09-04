@@ -25,6 +25,6 @@ char *_g_result_fname = "results.csv";
 #endif
 
 int main() {
-    ImagePerfTest::RunAllTests();
+    ImagePerfTest::RunAllTests(true);
     return 0;
 }
