@@ -93,7 +93,7 @@ public:
     }
 
     void Execute() {
-        cv::erode(wrappedSrcImageDevice, wrappedDstImageDevice, kernel, anchor, 1, cv::BORDER_REFLECT101);
+        cv::erode(wrappedSrcImageDevice, wrappedDstImageDevice, kernel, anchor, 1, cv::BORDER_CONSTANT);
     }
 };
 
@@ -115,7 +115,7 @@ public:
 
     void Execute() {
         cv::morphologyEx(wrappedSrcImageDevice, wrappedDstImageDevice,
-            CV_MOP_TOPHAT, kernel, anchor, 1, cv::BORDER_REFLECT101);
+            CV_MOP_TOPHAT, kernel, anchor, 1, cv::BORDER_CONSTANT);
     }
 };
 
@@ -136,7 +136,7 @@ public:
     }
 
     void Execute() {
-        cv::erode(wrappedSrcImageDevice, wrappedDstImageDevice, kernel, anchor, 1, cv::BORDER_REFLECT101);
+        cv::erode(wrappedSrcImageDevice, wrappedDstImageDevice, kernel, anchor, 1, cv::BORDER_CONSTANT);
     }
 };
 
@@ -158,7 +158,7 @@ public:
 
     void Execute() {
         cv::morphologyEx(wrappedSrcImageDevice, wrappedDstImageDevice,
-                         CV_MOP_TOPHAT, kernel, anchor, 1, cv::BORDER_REFLECT101);
+                         CV_MOP_TOPHAT, kernel, anchor, 1, cv::BORDER_CONSTANT);
     }
 };
 

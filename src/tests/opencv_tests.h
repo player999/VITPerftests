@@ -19,7 +19,7 @@ class test_boxfilter_cv : public CVImagePerfTest {
 
   void Execute() {
     cv::boxFilter(wrappedSrcImageHost, wrappedDstImageHost, wrappedDstImageHost.depth(), cvSize(13, 13),
-                  cvPoint(-1,-1), true, cv::BORDER_REFLECT101);
+                  cvPoint(-1,-1), true, cv::BORDER_CONSTANT);
   }
 };
 
@@ -72,7 +72,7 @@ class test_morphology_cv : public CVImagePerfTest {
   }
 
   void Execute() {
-    cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_REFLECT101);
+    cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_CONSTANT);
   }
 };
 
@@ -94,7 +94,7 @@ public:
 
     void Execute() {
         cv::morphologyEx(wrappedSrcImageHost, wrappedDstImageHost,
-            CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_REFLECT_101);
+            CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_CONSTANT);
     }
 };
 
@@ -115,7 +115,7 @@ public:
     }
 
     void Execute() {
-        cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_REFLECT101);
+        cv::erode(wrappedSrcImageHost, wrappedDstImageHost, kernel, anchor, 1, cv::BORDER_CONSTANT);
     }
 };
 
@@ -137,7 +137,7 @@ public:
 
     void Execute() {
         cv::morphologyEx(wrappedSrcImageHost, wrappedDstImageHost,
-                         CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_REFLECT_101);
+                         CV_MOP_TOPHAT, kernel, anchor, 1, IPL_BORDER_CONSTANT);
     }
 };
 
