@@ -51,6 +51,8 @@ void VipmImagePerfTest::LoadVipmModule() {
         _A_modopen1_nlk(module_, vipmipp, NULL);
     else if (VipmType::VIPM_OPENCV == module_type_)
         _A_modopen1_nlk(module_, vipmopencv, NULL);
+    else if (VipmType::VIPM_C == module_type_)
+        _A_modopen1_nlk(module_, vipmc, NULL);
     else
         module_ = _G_vipm_service_default;
 //#ifdef _WIN32

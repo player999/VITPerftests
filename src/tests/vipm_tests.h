@@ -313,19 +313,19 @@ REGISTER_VIPMIPP_TEST(TestType::kHist, test_hist_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kCompare, test_compare_vipm);
 # endif
 
-# if defined(__ARM_ARCH)
-#  define REGISTER_VIPMC_TEST(test_type, classname) \
-    REGISTER_TEST(TestPlatform::kVipmC , test_type, classname<VIPM_C>)
-REGISTER_VIPMC_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
-REGISTER_VIPMC_TEST(TestType::kResize, test_resize_vipm);
-REGISTER_VIPMC_TEST(TestType::kMorphology, test_erode_vipm);
-REGISTER_VIPMC_TEST(TestType::kTopHat, test_tophat_vipm);
-REGISTER_VIPMC_TEST(TestType::kMorphology, test_erode_vert_vipm);
-REGISTER_VIPMC_TEST(TestType::kTopHat, test_tophat_vert_vipm);
-REGISTER_VIPMC_TEST(TestType::kOtsu, test_otsu_vipm);
-REGISTER_VIPMC_TEST(TestType::kHist, test_hist_vipm);
-REGISTER_VIPMC_TEST(TestType::kCompare, test_compare_vipm);
-# endif
+// # if defined(__ARM_ARCH)
+// #  define REGISTER_VIPMC_TEST(test_type, classname) \
+//     REGISTER_TEST(TestPlatform::kVipmC , test_type, classname<VIPM_DEFAULT>)
+// REGISTER_VIPMC_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
+// REGISTER_VIPMC_TEST(TestType::kResize, test_resize_vipm);
+// REGISTER_VIPMC_TEST(TestType::kMorphology, test_erode_vipm);
+// REGISTER_VIPMC_TEST(TestType::kTopHat, test_tophat_vipm);
+// REGISTER_VIPMC_TEST(TestType::kMorphology, test_erode_vert_vipm);
+// REGISTER_VIPMC_TEST(TestType::kTopHat, test_tophat_vert_vipm);
+// REGISTER_VIPMC_TEST(TestType::kOtsu, test_otsu_vipm);
+// REGISTER_VIPMC_TEST(TestType::kHist, test_hist_vipm);
+// REGISTER_VIPMC_TEST(TestType::kCompare, test_compare_vipm);
+// # endif
 
 #  define REGISTER_VIPMOCV_TEST(test_type, classname) \
 	REGISTER_TEST(TestPlatform::kVipmOpenCV , test_type, classname<VIPM_OPENCV>)
