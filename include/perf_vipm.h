@@ -13,7 +13,8 @@
 enum VipmType {
     VIPM_DEFAULT = 0,
     VIPM_IPP,
-    VIPM_OPENCV
+    VIPM_OPENCV,
+    VIPM_C
 };
 
 class VipmImagePerfTest : public ImagePerfTest {

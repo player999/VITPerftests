@@ -12,6 +12,7 @@
 enum TestPlatform {
     kVipmIPP,
     kVipmOpenCV,
+    kVipmC,
     kOpenCV3,
     kOpenCVCLCPU3,
     kOpenCV3CLIntelGPU,
@@ -41,7 +42,7 @@ class ImagePerfTest {
         TestPlatform test_platform;
         TestType     test_type;
     };
-    
+
     static std::vector<TestNode> tests;
 
     static void RunAllTests(bool order_by_test_type = false);

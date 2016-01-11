@@ -32,8 +32,8 @@ public:
     }
 
     void Execute() {
-        VipmFilter(module_, memstorage_, wrappedDstImage_, wrappedSrcImage_, 
-            NULL, VipmK_BLUR_FILTER, &shape, NULL);
+        VipmFilter(module_, memstorage_, wrappedDstImage_, wrappedSrcImage_,
+            NULL, VipmK_BOX_FILTER, &shape, NULL);
     }
 
 };
@@ -72,8 +72,8 @@ public:
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
 
-        unsigned char strel_data[16] = { 
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
+        unsigned char strel_data[16] = {
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00
         };
         struct vodi_matparm p;
@@ -90,7 +90,7 @@ public:
     }
 
     void Execute() {
-        VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_ERODE, 
+        VipmMorphop_1(module_, memstorage_, &state, VipmK_MORPH_ERODE,
             wrappedDstImage_, wrappedSrcImage_, NULL, NULL);
     }
 };
@@ -239,7 +239,7 @@ public:
     test_otsu_vipm() : VipmImagePerfTest(IMWIDTH, IMHEIGHT, vtype) {
         set_sq_side(SQSIDE);
         set_execution_count(RUN_COUNT);
-        opts.mtho_method = VipmF_THRESH_OTSU_METHOD;
+        opts.mtho_method = VipmK_THRESH_OTSU_METHOD;
         opts.otsu.mtho_vrange[0] = VipmK_THRESH_DFL_VRANGE;
         opts.otsu.mtho_global_fthresh = VipmK_INVAL_FTHRESH;
         opts.otsu.mtho_global_factor = 1;
@@ -251,7 +251,7 @@ public:
     }
 
     void Execute() {
-        VipmThreshold(module_, memstorage_, wrappedDstImage_, 
+        VipmThreshold(module_, memstorage_, wrappedDstImage_,
             wrappedSrcImage_, NULL, &opts, 2, parms, NULL);
     }
 
@@ -312,6 +312,21 @@ REGISTER_VIPMIPP_TEST(TestType::kOtsu, test_otsu_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kHist, test_hist_vipm);
 REGISTER_VIPMIPP_TEST(TestType::kCompare, test_compare_vipm);
 # endif
+
+# if defined(__ARM_ARCH)
+#  define REGISTER_VIPMC_TEST(test_type, classname) \
+    REGISTER_TEST(TestPlatform::kVipmC , test_type, classname<VIPM_C>)
+REGISTER_VIPMC_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
+REGISTER_VIPMC_TEST(TestType::kResize, test_resize_vipm);
+REGISTER_VIPMC_TEST(TestType::kMorphology, test_erode_vipm);
+REGISTER_VIPMC_TEST(TestType::kTopHat, test_tophat_vipm);
+REGISTER_VIPMC_TEST(TestType::kMorphology, test_erode_vert_vipm);
+REGISTER_VIPMC_TEST(TestType::kTopHat, test_tophat_vert_vipm);
+REGISTER_VIPMC_TEST(TestType::kOtsu, test_otsu_vipm);
+REGISTER_VIPMC_TEST(TestType::kHist, test_hist_vipm);
+REGISTER_VIPMC_TEST(TestType::kCompare, test_compare_vipm);
+# endif
+
 #  define REGISTER_VIPMOCV_TEST(test_type, classname) \
 	REGISTER_TEST(TestPlatform::kVipmOpenCV , test_type, classname<VIPM_OPENCV>)
 REGISTER_VIPMOCV_TEST(TestType::kBoxFilter, test_boxfilter_vipm);
@@ -323,6 +338,5 @@ REGISTER_VIPMOCV_TEST(TestType::kTopHat, test_tophat_vert_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kOtsu, test_otsu_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kHist, test_hist_vipm);
 REGISTER_VIPMOCV_TEST(TestType::kCompare, test_compare_vipm);
-
 #endif //PERFTESTS_VIPM_TESTS_H
 

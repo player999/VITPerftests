@@ -14,6 +14,7 @@
 
 std::map<VipmType, const char *> VipmImagePerfTest::mod_names = {
     { VIPM_DEFAULT, "vipm" },
+    { VIPM_C, "vipm-c" },
     { VIPM_IPP, "vipm-ipp" },
     { VIPM_OPENCV, "vipm-opencv" }
 };
